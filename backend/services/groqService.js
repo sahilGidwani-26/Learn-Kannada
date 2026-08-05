@@ -17,7 +17,7 @@ const getClient = () => {
  * @param {string} userPrompt
  * @param {boolean} jsonMode - if true, asks the model to only return JSON
  */
-const chatCompletion = async (systemPrompt, userPrompt, jsonMode = false) => {
+const chatCompletion = async (systemPrompt, userPrompt, jsonMode = false, maxTokens = 2048) => {
   const client = getClient();
 
   const completion = await client.chat.completions.create({
@@ -27,7 +27,7 @@ const chatCompletion = async (systemPrompt, userPrompt, jsonMode = false) => {
       { role: "user", content: userPrompt },
     ],
     temperature: 0.4,
-    max_tokens: 1024,
+    max_tokens: maxTokens,
     ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
   });
 
