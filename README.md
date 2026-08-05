@@ -1,29 +1,31 @@
 # Kannada Buddy — Starter Codebase
 
-Yeh project ka **Phase 1 + Phase 2 core foundation** hai (Auth, Home Dashboard, Alphabets/Numbers/Words,
-Camera OCR Scan, AI Teacher, Quiz) — asli, chalne wala code, jisme aap baaki modules (Games, Rewards,
-Parent Dashboard, Offline Mode) khud add kar sakte ho.
+This project provides the **Phase 1 + Phase 2 core foundation** of the Kannada Buddy mobile application. It includes Authentication, Home Dashboard, Kannada Alphabets, Numbers, Words, Camera OCR Scan, AI Teacher, and Quiz modules.
+
+This is a **fully functional starter project**, not a dummy prototype. You can extend it by adding additional features such as Games, Rewards, Parent Dashboard, Offline Mode, and more.
 
 ```
 kannada-buddy/
 ├── backend/     → Node.js + Express + MongoDB + Groq AI + OCR API
-└── frontend/    → React Native + TypeScript mobile app
+└── frontend/    → React Native + TypeScript (Expo)
 ```
 
 ---
 
-## ⚠️ Zaroori baat (please pehle padhein)
+# Important Information
 
-- **Backend** yahan Node.js hai — `npm install` karke turant chalega, koi dikkat nahi.
-- **Frontend** React Native hai. React Native app sirf `npm install` se nahi chalti — usko
-  **Android Studio (Android ke liye) ya Xcode (iOS/Mac ke liye)** chahiye hoti hai, kyunki isme
-  native camera/voice modules hain. Neeche pura setup diya hai.
-- Games, Parent Dashboard, Offline Mode, Rewards jaise modules abhi **iske andar nahi hain** —
-  in dev-phase mein wo agla step hai. Jo abhi hai wo asli, working code hai — dummy nahi.
+Before setting up the project, please read the following:
+
+- The **backend** is built using **Node.js and Express**, so it can be started immediately after installing dependencies.
+- The **frontend** is built using **React Native with Expo**, allowing you to run the application directly on your mobile device using the Expo Go app.
+- Features such as **Games**, **Parent Dashboard**, **Rewards**, and **Offline Mode** are not included in this starter project. They are planned for future development.
+- Everything included in this repository is fully functional and serves as a solid production-ready foundation.
 
 ---
 
-## 1️⃣ Backend Setup
+# Backend Setup
+
+Navigate to the backend folder:
 
 ```bash
 cd backend
@@ -31,101 +33,339 @@ npm install
 cp .env.example .env
 ```
 
-`.env` file kholo aur fill karo:
+Open the `.env` file and configure the following variables.
 
-| Variable | Kahan se milega |
-|---|---|
-| `MONGO_URI` | MongoDB Atlas (free) — https://www.mongodb.com/cloud/atlas ya local MongoDB |
-| `JWT_SECRET` | Koi bhi random lamba string daal do |
-| `GROQ_API_KEY` | https://console.groq.com — free account bana ke API key generate karo |
-| `GOOGLE_VISION_API_KEY` | *(optional)* — nahi doge to app apne aap Tesseract.js (free OCR) use karega |
+| Variable | Description |
+|----------|-------------|
+| `MONGO_URI` | MongoDB Atlas connection string or local MongoDB URI |
+| `JWT_SECRET` | Any long random string for JWT authentication |
+| `GROQ_API_KEY` | Generate a free API key from https://console.groq.com |
+| `GOOGLE_VISION_API_KEY` | Optional. If omitted, the application automatically uses Tesseract.js for OCR |
 
-Phir:
+After updating the environment variables, run:
 
 ```bash
-npm run seed     # Kannada alphabets/numbers/words ka sample data DB mein daal dega
-npm run dev       # Server chalu ho jayega http://localhost:5000
+npm run seed
+npm run dev
 ```
 
-Test karo browser mein: `http://localhost:5000` → `{"success":true,"message":"Kannada Buddy API is running"}`
+The backend server will start on:
 
-### Backend ready hai:
-- ✅ Register/Login (JWT auth)
-- ✅ Alphabets, Numbers, Words APIs (real DB data)
-- ✅ Camera Scan → OCR → Groq AI translation+explanation (`/api/ocr/scan`)
-- ✅ AI Teacher chat (`/api/ai/teacher`)
-- ✅ Quiz submit with XP/Coins rewards (`/api/quiz/submit`)
-- ✅ Progress tracking, History
+```
+http://localhost:5000
+```
+
+Open the above URL in your browser.
+
+Expected response:
+
+```json
+{
+  "success": true,
+  "message": "Kannada Buddy API is running"
+}
+```
 
 ---
 
-## 2️⃣ Frontend Setup (Expo — no Android Studio/Xcode needed)
+# Backend Features
 
-Bas Node.js aur phone mein **Expo Go** app chahiye (Play Store / App Store se free install karo).
+The backend currently includes:
+
+- User Registration
+- User Login
+- JWT Authentication
+- Kannada Alphabets API
+- Numbers API
+- Words API
+- Camera OCR Processing
+- OCR Text Recognition
+- AI Translation and Explanation using Groq
+- AI Teacher Chat API
+- Quiz Submission
+- XP and Coins Reward System
+- Learning Progress Tracking
+- Scan History
+
+---
+
+# Frontend Setup (Expo)
+
+Navigate to the frontend folder.
 
 ```bash
 cd frontend
 npm install
 ```
 
-`src/services/api.ts` kholo aur ye line badlo — apne computer ka **LAN IP** daalo
-(phone aur computer dono ek hi Wi-Fi par hone chahiye):
+Open the following file:
 
-```ts
-export const API_BASE_URL = "http://192.168.1.42:5000/api"; // apna IP daalo
+```
+src/services/api.ts
 ```
 
-LAN IP nikalne ka tareeka:
-- **Windows:** `ipconfig` → "IPv4 Address" dekho
-- **Mac:** `ipconfig getifaddr en0`
-- **Linux:** `hostname -I`
+Replace the API URL with your computer's Local Area Network (LAN) IP address.
 
-Ab chalao:
+Example:
+
+```ts
+export const API_BASE_URL = "http://192.168.1.42:5000/api";
+```
+
+**Important:** Your mobile device and your computer must be connected to the same Wi-Fi network.
+
+### Find Your Local IP Address
+
+**Windows**
+
+```bash
+ipconfig
+```
+
+Look for the **IPv4 Address**.
+
+**macOS**
+
+```bash
+ipconfig getifaddr en0
+```
+
+**Linux**
+
+```bash
+hostname -I
+```
+
+Start the Expo development server:
 
 ```bash
 npx expo start
 ```
 
-Terminal mein ek **QR code** dikhega:
-- **Android** → Expo Go app kholo → "Scan QR Code" se scan karo
-- **iOS** → phone ke normal Camera app se QR scan karo, "Open in Expo Go" dabao
+A QR code will appear in the terminal.
 
-App turant phone par khul jayega — koi build/compile wait nahi, koi cable/USB bhi nahi chahiye
-(bas same Wi-Fi hona chahiye).
+### Running the Application
 
-> Backend bhi isi computer par chal raha ho tab hi phone usse connect ho payega
-> (dono chalu rakho: ek terminal mein `npm run dev` backend ka, doosre mein `npx expo start`).
+#### Android
 
-### Camera & permissions
-Camera permission `expo-camera` khud maang leta hai jab aap Camera Scan screen kholte ho —
-koi manual native config nahi karni. `app.json` mein permissions already set hain.
+1. Install **Expo Go** from the Google Play Store.
+2. Open Expo Go.
+3. Tap **Scan QR Code**.
+4. Scan the QR code displayed in the terminal.
+
+#### iPhone (iOS)
+
+1. Install **Expo Go** from the App Store.
+2. Open the Camera app.
+3. Scan the QR code.
+4. Tap **Open in Expo Go**.
+
+The application will launch directly on your mobile device.
+
+No USB cable or manual build process is required.
+
+> Make sure both the backend server (`npm run dev`) and the Expo development server (`npx expo start`) are running simultaneously.
 
 ---
 
-## 3️⃣ Kya kaam kar raha hai abhi (test kar sakte ho)
+# Camera Permissions
 
-1. App khulega → Onboarding → Register/Login
-2. Home dashboard → Alphabets/Numbers/Words dekh sakte ho (real DB se)
-3. Camera Scan → photo kheecho → OCR + AI translation + explanation aayega
-4. AI Teacher → koi bhi Kannada question poocho, Groq AI jawab dega
-5. Quiz → letter quiz khelo → XP/Coins milenge
+The application uses the **expo-camera** package.
 
-## 4️⃣ Aage kya add karna hai (roadmap already docs mein hai)
+When the Camera Scan screen is opened for the first time, Expo automatically requests camera permission.
 
-- Writing Practice (stroke detection)
-- Games (Balloon Pop, Memory, Matching)
-- Daily Challenge + Rewards screen
+No additional native configuration is required because the necessary permissions are already configured in `app.json`.
+
+---
+
+# Features Available
+
+After setup, you can test the following features:
+
+### Authentication
+
+- User Registration
+- User Login
+- Secure JWT Authentication
+
+### Learning Dashboard
+
+- Kannada Alphabets
+- Kannada Numbers
+- Kannada Words
+
+All learning content is loaded from MongoDB.
+
+### Camera OCR
+
+- Capture an image.
+- Detect Kannada text using OCR.
+- Receive AI-powered translation.
+- Receive AI-generated explanation.
+
+### AI Teacher
+
+Ask any Kannada learning question and receive responses generated using Groq AI.
+
+### Quiz
+
+- Attempt Kannada quizzes.
+- Earn XP.
+- Earn Coins.
+- Track learning progress.
+
+---
+
+# Project Structure
+
+## Backend
+
+```
+backend/
+│
+├── config/
+├── controllers/
+├── middleware/
+├── models/
+├── routes/
+├── services/
+├── utils/
+├── seed/
+├── app.js
+└── server.js
+```
+
+## Frontend
+
+```
+frontend/
+│
+├── src/
+│   ├── components/
+│   ├── navigation/
+│   ├── screens/
+│   ├── services/
+│   ├── hooks/
+│   ├── utils/
+│   ├── context/
+│   ├── assets/
+│   └── types/
+│
+├── App.tsx
+└── app.json
+```
+
+---
+
+# Future Development Roadmap
+
+The following features are planned for future releases:
+
+- Writing Practice with Stroke Detection
+- Balloon Pop Learning Game
+- Memory Matching Game
+- Letter Matching Activities
+- Daily Challenges
+- Rewards and Achievement System
 - Parent Dashboard
-- Offline Mode (AsyncStorage caching)
-- Live Camera Translation (frame-by-frame OCR overlay)
+- Offline Learning Mode using AsyncStorage
+- Live Camera Translation
+- Real-Time OCR Overlay
+- Voice Pronunciation Practice
+- Progress Analytics
+- Learning Streaks
+- Push Notifications
 
-Har naya module isi structure follow kare: backend mein model+controller+route, frontend mein
-screen+service — phir `AppNavigator.tsx` mein register kar do.
+Every new module should follow the existing architecture.
+
+### Backend
+
+- Model
+- Controller
+- Route
+
+### Frontend
+
+- Screen
+- Service
+
+Finally, register the screen inside:
+
+```
+AppNavigator.tsx
+```
 
 ---
 
-## Kisi bhi step mein atko to
+# Troubleshooting
 
-- Backend na chale → `.env` check karo (MONGO_URI sahi hai? MongoDB chal raha hai?)
-- Frontend build error → `npx react-native doctor` chalao, missing cheez dikha dega
-- AI response na aaye → GROQ_API_KEY check karo `.env` mein
+## Backend is not starting
+
+- Verify that `MONGO_URI` is correct.
+- Ensure MongoDB Atlas or Local MongoDB is running.
+- Confirm all required environment variables are present.
+
+---
+
+## Frontend cannot connect to the backend
+
+- Ensure both devices are connected to the same Wi-Fi network.
+- Verify that the correct LAN IP address is used in `src/services/api.ts`.
+- Make sure the backend server is running.
+
+---
+
+## Camera is not working
+
+- Grant camera permission when prompted.
+- Restart Expo if permissions were denied previously.
+
+---
+
+## OCR is not detecting text
+
+- Capture a clear image.
+- Ensure good lighting.
+- Use high-resolution images for better recognition.
+
+---
+
+## AI responses are not working
+
+- Verify that `GROQ_API_KEY` is correctly configured in the `.env` file.
+- Restart the backend after updating the environment variables.
+
+---
+
+# Technology Stack
+
+### Frontend
+
+- React Native
+- Expo
+- TypeScript
+- React Navigation
+- Axios
+- Expo Camera
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- Groq AI API
+- Google Vision API (Optional)
+- Tesseract.js OCR
+
+---
+
+# License
+
+This project is intended for educational and learning purposes. You are free to modify, extend, and customize it according to your project requirements.
+
+---
+
+**Happy Coding! 🚀**
+**Kannada Buddy – Learn Kannada Smartly with AI.**
