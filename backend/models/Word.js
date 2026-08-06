@@ -12,6 +12,7 @@ const wordSchema = new mongoose.Schema(
       required: true,
     },
     kannada: { type: String, required: true },
+    pronunciation: { type: String, required: true },
     hindi: { type: String, required: true },
     english: { type: String, required: true },
     imageUrl: { type: String },

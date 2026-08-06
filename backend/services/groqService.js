@@ -29,7 +29,7 @@ const chatCompletion = async (systemPrompt, userPrompt, jsonMode = false, maxTok
     temperature: 0.4,
     max_tokens: maxTokens,
     ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-  });
+  }); 
 
   return completion.choices[0]?.message?.content || "";
 };

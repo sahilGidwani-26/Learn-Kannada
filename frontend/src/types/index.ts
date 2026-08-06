@@ -29,6 +29,7 @@ export interface Word {
   _id: string;
   category: string;
   kannada: string;
+  pronunciation: string;
   hindi: string;
   english: string;
   imageUrl?: string;

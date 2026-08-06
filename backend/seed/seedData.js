@@ -105,7 +105,7 @@ const consonants = [
 const alphabets = [...vowels, ...consonants];
 
 // ============================================================
-// NUMBERS 0-20 (extend the same pattern up to 100 whenever you like)
+// NUMBERS 0-20
 // ============================================================
 
 const numbers = [
@@ -133,135 +133,135 @@ const numbers = [
 ];
 
 // ============================================================
-// WORDS - all 15 categories
+// WORDS - all 15 categories, each with a written pronunciation
 // ============================================================
 
 const words = [
   // Animals
-  { category: "animals", kannada: "ನಾಯಿ", hindi: "कुत्ता", english: "Dog",
+  { category: "animals", kannada: "ನಾಯಿ", pronunciation: "naayi", hindi: "कुत्ता", english: "Dog",
     exampleSentence: { kannada: "ನಾಯಿ ಓಡುತ್ತಿದೆ", hindi: "कुत्ता दौड़ रहा है", english: "The dog is running" } },
-  { category: "animals", kannada: "ಬೆಕ್ಕು", hindi: "बिल्ली", english: "Cat",
+  { category: "animals", kannada: "ಬೆಕ್ಕು", pronunciation: "bekku", hindi: "बिल्ली", english: "Cat",
     exampleSentence: { kannada: "ಬೆಕ್ಕು ಹಾಲು ಕುಡಿಯುತ್ತದೆ", hindi: "बिल्ली दूध पीती है", english: "The cat drinks milk" } },
-  { category: "animals", kannada: "ಹಸು", hindi: "गाय", english: "Cow" },
-  { category: "animals", kannada: "ಆನೆ", hindi: "हाथी", english: "Elephant" },
-  { category: "animals", kannada: "ಸಿಂಹ", hindi: "शेर", english: "Lion" },
-  { category: "animals", kannada: "ಕುದುರೆ", hindi: "घोड़ा", english: "Horse" },
+  { category: "animals", kannada: "ಹಸು", pronunciation: "hasu", hindi: "गाय", english: "Cow" },
+  { category: "animals", kannada: "ಆನೆ", pronunciation: "aane", hindi: "हाथी", english: "Elephant" },
+  { category: "animals", kannada: "ಸಿಂಹ", pronunciation: "simha", hindi: "शेर", english: "Lion" },
+  { category: "animals", kannada: "ಕುದುರೆ", pronunciation: "kudure", hindi: "घोड़ा", english: "Horse" },
 
   // Birds
-  { category: "birds", kannada: "ಗಿಣಿ", hindi: "तोता", english: "Parrot" },
-  { category: "birds", kannada: "ಕಾಗೆ", hindi: "कौआ", english: "Crow" },
-  { category: "birds", kannada: "ಗುಬ್ಬಿ", hindi: "गौरैया", english: "Sparrow" },
-  { category: "birds", kannada: "ನವಿಲು", hindi: "मोर", english: "Peacock" },
-  { category: "birds", kannada: "ಬಾತುಕೋಳಿ", hindi: "बत्तख", english: "Duck" },
-  { category: "birds", kannada: "ಗೂಬೆ", hindi: "उल्लू", english: "Owl" },
+  { category: "birds", kannada: "ಗಿಣಿ", pronunciation: "gini", hindi: "तोता", english: "Parrot" },
+  { category: "birds", kannada: "ಕಾಗೆ", pronunciation: "kaage", hindi: "कौआ", english: "Crow" },
+  { category: "birds", kannada: "ಗುಬ್ಬಿ", pronunciation: "gubbi", hindi: "गौरैया", english: "Sparrow" },
+  { category: "birds", kannada: "ನವಿಲು", pronunciation: "navilu", hindi: "मोर", english: "Peacock" },
+  { category: "birds", kannada: "ಬಾತುಕೋಳಿ", pronunciation: "baatukoli", hindi: "बत्तख", english: "Duck" },
+  { category: "birds", kannada: "ಗೂಬೆ", pronunciation: "goobe", hindi: "उल्लू", english: "Owl" },
 
   // Colors
-  { category: "colors", kannada: "ಕೆಂಪು", hindi: "लाल", english: "Red" },
-  { category: "colors", kannada: "ಹಸಿರು", hindi: "हरा", english: "Green" },
-  { category: "colors", kannada: "ನೀಲಿ", hindi: "नीला", english: "Blue" },
-  { category: "colors", kannada: "ಹಳದಿ", hindi: "पीला", english: "Yellow" },
-  { category: "colors", kannada: "ಕಪ್ಪು", hindi: "काला", english: "Black" },
-  { category: "colors", kannada: "ಬಿಳಿ", hindi: "सफ़ेद", english: "White" },
+  { category: "colors", kannada: "ಕೆಂಪು", pronunciation: "kempu", hindi: "लाल", english: "Red" },
+  { category: "colors", kannada: "ಹಸಿರು", pronunciation: "hasiru", hindi: "हरा", english: "Green" },
+  { category: "colors", kannada: "ನೀಲಿ", pronunciation: "neeli", hindi: "नीला", english: "Blue" },
+  { category: "colors", kannada: "ಹಳದಿ", pronunciation: "haladi", hindi: "पीला", english: "Yellow" },
+  { category: "colors", kannada: "ಕಪ್ಪು", pronunciation: "kappu", hindi: "काला", english: "Black" },
+  { category: "colors", kannada: "ಬಿಳಿ", pronunciation: "bili", hindi: "सफ़ेद", english: "White" },
 
   // Vegetables
-  { category: "vegetables", kannada: "ಟೊಮ್ಯಾಟೊ", hindi: "टमाटर", english: "Tomato" },
-  { category: "vegetables", kannada: "ಆಲೂಗಡ್ಡೆ", hindi: "आलू", english: "Potato" },
-  { category: "vegetables", kannada: "ಈರುಳ್ಳಿ", hindi: "प्याज", english: "Onion" },
-  { category: "vegetables", kannada: "ಕ್ಯಾರೆಟ್", hindi: "गाजर", english: "Carrot" },
-  { category: "vegetables", kannada: "ಬದನೆಕಾಯಿ", hindi: "बैंगन", english: "Brinjal" },
-  { category: "vegetables", kannada: "ಸೌತೆಕಾಯಿ", hindi: "खीरा", english: "Cucumber" },
+  { category: "vegetables", kannada: "ಟೊಮ್ಯಾಟೊ", pronunciation: "tomato", hindi: "टमाटर", english: "Tomato" },
+  { category: "vegetables", kannada: "ಆಲೂಗಡ್ಡೆ", pronunciation: "aalugadde", hindi: "आलू", english: "Potato" },
+  { category: "vegetables", kannada: "ಈರುಳ್ಳಿ", pronunciation: "eerulli", hindi: "प्याज", english: "Onion" },
+  { category: "vegetables", kannada: "ಕ್ಯಾರೆಟ್", pronunciation: "carrot", hindi: "गाजर", english: "Carrot" },
+  { category: "vegetables", kannada: "ಬದನೆಕಾಯಿ", pronunciation: "badanekaayi", hindi: "बैंगन", english: "Brinjal" },
+  { category: "vegetables", kannada: "ಸೌತೆಕಾಯಿ", pronunciation: "sautekaayi", hindi: "खीरा", english: "Cucumber" },
 
   // Fruits
-  { category: "fruits", kannada: "ಸೇಬು", hindi: "सेब", english: "Apple",
+  { category: "fruits", kannada: "ಸೇಬು", pronunciation: "sebu", hindi: "सेब", english: "Apple",
     exampleSentence: { kannada: "ಸೇಬು ಕೆಂಪಗಿದೆ", hindi: "सेब लाल है", english: "The apple is red" } },
-  { category: "fruits", kannada: "ಬಾಳೆಹಣ್ಣು", hindi: "केला", english: "Banana",
+  { category: "fruits", kannada: "ಬಾಳೆಹಣ್ಣು", pronunciation: "baalehannu", hindi: "केला", english: "Banana",
     exampleSentence: { kannada: "ಬಾಳೆಹಣ್ಣು ಸಿಹಿಯಾಗಿದೆ", hindi: "केला मीठा है", english: "The banana is sweet" } },
-  { category: "fruits", kannada: "ಮಾವಿನಹಣ್ಣು", hindi: "आम", english: "Mango" },
-  { category: "fruits", kannada: "ದ್ರಾಕ್ಷಿ", hindi: "अंगूर", english: "Grapes" },
-  { category: "fruits", kannada: "ಕಿತ್ತಳೆ", hindi: "संतरा", english: "Orange" },
-  { category: "fruits", kannada: "ಅನಾನಸ್", hindi: "अनानास", english: "Pineapple" },
+  { category: "fruits", kannada: "ಮಾವಿನಹಣ್ಣು", pronunciation: "maavinahannu", hindi: "आम", english: "Mango" },
+  { category: "fruits", kannada: "ದ್ರಾಕ್ಷಿ", pronunciation: "draakshi", hindi: "अंगूर", english: "Grapes" },
+  { category: "fruits", kannada: "ಕಿತ್ತಳೆ", pronunciation: "kittale", hindi: "संतरा", english: "Orange" },
+  { category: "fruits", kannada: "ಅನಾನಸ್", pronunciation: "ananas", hindi: "अनानास", english: "Pineapple" },
 
   // Family
-  { category: "family", kannada: "ಅಮ್ಮ", hindi: "माँ", english: "Mother",
+  { category: "family", kannada: "ಅಮ್ಮ", pronunciation: "amma", hindi: "माँ", english: "Mother",
     exampleSentence: { kannada: "ಅಮ್ಮ ಅಡುಗೆ ಮಾಡುತ್ತಾಳೆ", hindi: "माँ खाना बनाती है", english: "Mother cooks food" } },
-  { category: "family", kannada: "ಅಪ್ಪ", hindi: "पिता", english: "Father",
+  { category: "family", kannada: "ಅಪ್ಪ", pronunciation: "appa", hindi: "पिता", english: "Father",
     exampleSentence: { kannada: "ಅಪ್ಪ ಕೆಲಸಕ್ಕೆ ಹೋಗುತ್ತಾರೆ", hindi: "पिता काम पर जाते हैं", english: "Father goes to work" } },
-  { category: "family", kannada: "ಅಣ್ಣ", hindi: "बड़ा भाई", english: "Elder brother" },
-  { category: "family", kannada: "ಅಕ್ಕ", hindi: "बड़ी बहन", english: "Elder sister" },
-  { category: "family", kannada: "ಅಜ್ಜ", hindi: "दादा", english: "Grandfather" },
-  { category: "family", kannada: "ಅಜ್ಜಿ", hindi: "दादी", english: "Grandmother" },
+  { category: "family", kannada: "ಅಣ್ಣ", pronunciation: "anna", hindi: "बड़ा भाई", english: "Elder brother" },
+  { category: "family", kannada: "ಅಕ್ಕ", pronunciation: "akka", hindi: "बड़ी बहन", english: "Elder sister" },
+  { category: "family", kannada: "ಅಜ್ಜ", pronunciation: "ajja", hindi: "दादा", english: "Grandfather" },
+  { category: "family", kannada: "ಅಜ್ಜಿ", pronunciation: "ajji", hindi: "दादी", english: "Grandmother" },
 
   // Body Parts
-  { category: "bodyParts", kannada: "ತಲೆ", hindi: "सिर", english: "Head" },
-  { category: "bodyParts", kannada: "ಕಣ್ಣು", hindi: "आँख", english: "Eye" },
-  { category: "bodyParts", kannada: "ಕೈ", hindi: "हाथ", english: "Hand" },
-  { category: "bodyParts", kannada: "ಕಾಲು", hindi: "पैर", english: "Leg" },
-  { category: "bodyParts", kannada: "ಮೂಗು", hindi: "नाक", english: "Nose" },
-  { category: "bodyParts", kannada: "ಬಾಯಿ", hindi: "मुँह", english: "Mouth" },
+  { category: "bodyParts", kannada: "ತಲೆ", pronunciation: "tale", hindi: "सिर", english: "Head" },
+  { category: "bodyParts", kannada: "ಕಣ್ಣು", pronunciation: "kannu", hindi: "आँख", english: "Eye" },
+  { category: "bodyParts", kannada: "ಕೈ", pronunciation: "kai", hindi: "हाथ", english: "Hand" },
+  { category: "bodyParts", kannada: "ಕಾಲು", pronunciation: "kaalu", hindi: "पैर", english: "Leg" },
+  { category: "bodyParts", kannada: "ಮೂಗು", pronunciation: "moogu", hindi: "नाक", english: "Nose" },
+  { category: "bodyParts", kannada: "ಬಾಯಿ", pronunciation: "baayi", hindi: "मुँह", english: "Mouth" },
 
   // School
-  { category: "school", kannada: "ಶಾಲೆ", hindi: "स्कूल", english: "School" },
-  { category: "school", kannada: "ಪುಸ್ತಕ", hindi: "किताब", english: "Book" },
-  { category: "school", kannada: "ಪೆನ್ನು", hindi: "पेन", english: "Pen" },
-  { category: "school", kannada: "ಶಿಕ್ಷಕ", hindi: "शिक्षक", english: "Teacher" },
-  { category: "school", kannada: "ವಿದ್ಯಾರ್ಥಿ", hindi: "छात्र", english: "Student" },
-  { category: "school", kannada: "ಬ್ಯಾಗ್", hindi: "बैग", english: "Bag" },
+  { category: "school", kannada: "ಶಾಲೆ", pronunciation: "shaale", hindi: "स्कूल", english: "School" },
+  { category: "school", kannada: "ಪುಸ್ತಕ", pronunciation: "pustaka", hindi: "किताब", english: "Book" },
+  { category: "school", kannada: "ಪೆನ್ನು", pronunciation: "pennu", hindi: "पेन", english: "Pen" },
+  { category: "school", kannada: "ಶಿಕ್ಷಕ", pronunciation: "shikshaka", hindi: "शिक्षक", english: "Teacher" },
+  { category: "school", kannada: "ವಿದ್ಯಾರ್ಥಿ", pronunciation: "vidyaarthi", hindi: "छात्र", english: "Student" },
+  { category: "school", kannada: "ಬ್ಯಾಗ್", pronunciation: "byag", hindi: "बैग", english: "Bag" },
 
   // Vehicles
-  { category: "vehicles", kannada: "ಕಾರು", hindi: "कार", english: "Car" },
-  { category: "vehicles", kannada: "ಬಸ್ಸು", hindi: "बस", english: "Bus" },
-  { category: "vehicles", kannada: "ಸೈಕಲ್", hindi: "साइकिल", english: "Bicycle" },
-  { category: "vehicles", kannada: "ರೈಲು", hindi: "ट्रेन", english: "Train" },
-  { category: "vehicles", kannada: "ವಿಮಾನ", hindi: "हवाई जहाज़", english: "Airplane" },
-  { category: "vehicles", kannada: "ದೋಣಿ", hindi: "नाव", english: "Boat" },
+  { category: "vehicles", kannada: "ಕಾರು", pronunciation: "kaaru", hindi: "कार", english: "Car" },
+  { category: "vehicles", kannada: "ಬಸ್ಸು", pronunciation: "bassu", hindi: "बस", english: "Bus" },
+  { category: "vehicles", kannada: "ಸೈಕಲ್", pronunciation: "saikal", hindi: "साइकिल", english: "Bicycle" },
+  { category: "vehicles", kannada: "ರೈಲು", pronunciation: "railu", hindi: "ट्रेन", english: "Train" },
+  { category: "vehicles", kannada: "ವಿಮಾನ", pronunciation: "vimaana", hindi: "हवाई जहाज़", english: "Airplane" },
+  { category: "vehicles", kannada: "ದೋಣಿ", pronunciation: "doni", hindi: "नाव", english: "Boat" },
 
   // Hospital
-  { category: "hospital", kannada: "ಆಸ್ಪತ್ರೆ", hindi: "अस्पताल", english: "Hospital" },
-  { category: "hospital", kannada: "ವೈದ್ಯ", hindi: "डॉक्टर", english: "Doctor" },
-  { category: "hospital", kannada: "ದಾದಿ", hindi: "नर्स", english: "Nurse" },
-  { category: "hospital", kannada: "ಔಷಧ", hindi: "दवाई", english: "Medicine" },
-  { category: "hospital", kannada: "ಇಂಜೆಕ್ಷನ್", hindi: "इंजेक्शन", english: "Injection" },
-  { category: "hospital", kannada: "ರೋಗಿ", hindi: "मरीज़", english: "Patient" },
+  { category: "hospital", kannada: "ಆಸ್ಪತ್ರೆ", pronunciation: "aaspatre", hindi: "अस्पताल", english: "Hospital" },
+  { category: "hospital", kannada: "ವೈದ್ಯ", pronunciation: "vaidya", hindi: "डॉक्टर", english: "Doctor" },
+  { category: "hospital", kannada: "ದಾದಿ", pronunciation: "daadi", hindi: "नर्स", english: "Nurse" },
+  { category: "hospital", kannada: "ಔಷಧ", pronunciation: "aushadha", hindi: "दवाई", english: "Medicine" },
+  { category: "hospital", kannada: "ಇಂಜೆಕ್ಷನ್", pronunciation: "injection", hindi: "इंजेक्शन", english: "Injection" },
+  { category: "hospital", kannada: "ರೋಗಿ", pronunciation: "rogi", hindi: "मरीज़", english: "Patient" },
 
   // Market
-  { category: "market", kannada: "ಮಾರುಕಟ್ಟೆ", hindi: "बाज़ार", english: "Market" },
-  { category: "market", kannada: "ಹಣ", hindi: "पैसा", english: "Money" },
-  { category: "market", kannada: "ಅಂಗಡಿ", hindi: "दुकान", english: "Shop" },
-  { category: "market", kannada: "ಬೆಲೆ", hindi: "कीमत", english: "Price" },
-  { category: "market", kannada: "ಚೀಲ", hindi: "थैला", english: "Bag" },
-  { category: "market", kannada: "ಗ್ರಾಹಕ", hindi: "ग्राहक", english: "Customer" },
+  { category: "market", kannada: "ಮಾರುಕಟ್ಟೆ", pronunciation: "maarukatte", hindi: "बाज़ार", english: "Market" },
+  { category: "market", kannada: "ಹಣ", pronunciation: "hana", hindi: "पैसा", english: "Money" },
+  { category: "market", kannada: "ಅಂಗಡಿ", pronunciation: "angadi", hindi: "दुकान", english: "Shop" },
+  { category: "market", kannada: "ಬೆಲೆ", pronunciation: "bele", hindi: "कीमत", english: "Price" },
+  { category: "market", kannada: "ಚೀಲ", pronunciation: "cheela", hindi: "थैला", english: "Bag" },
+  { category: "market", kannada: "ಗ್ರಾಹಕ", pronunciation: "graahaka", hindi: "ग्राहक", english: "Customer" },
 
   // Weather
-  { category: "weather", kannada: "ಮಳೆ", hindi: "बारिश", english: "Rain" },
-  { category: "weather", kannada: "ಬಿಸಿಲು", hindi: "धूप", english: "Sunshine" },
-  { category: "weather", kannada: "ಗಾಳಿ", hindi: "हवा", english: "Wind" },
-  { category: "weather", kannada: "ಚಳಿ", hindi: "ठंड", english: "Cold" },
-  { category: "weather", kannada: "ಮೋಡ", hindi: "बादल", english: "Cloud" },
-  { category: "weather", kannada: "ಗುಡುಗು", hindi: "गरज", english: "Thunder" },
+  { category: "weather", kannada: "ಮಳೆ", pronunciation: "male", hindi: "बारिश", english: "Rain" },
+  { category: "weather", kannada: "ಬಿಸಿಲು", pronunciation: "bisilu", hindi: "धूप", english: "Sunshine" },
+  { category: "weather", kannada: "ಗಾಳಿ", pronunciation: "gaali", hindi: "हवा", english: "Wind" },
+  { category: "weather", kannada: "ಚಳಿ", pronunciation: "chali", hindi: "ठंड", english: "Cold" },
+  { category: "weather", kannada: "ಮೋಡ", pronunciation: "moda", hindi: "बादल", english: "Cloud" },
+  { category: "weather", kannada: "ಗುಡುಗು", pronunciation: "gudugu", hindi: "गरज", english: "Thunder" },
 
   // Office
-  { category: "office", kannada: "ಕಚೇರಿ", hindi: "दफ़्तर", english: "Office" },
-  { category: "office", kannada: "ಕಂಪ್ಯೂಟರ್", hindi: "कंप्यूटर", english: "Computer" },
-  { category: "office", kannada: "ಮೇಜು", hindi: "मेज़", english: "Table" },
-  { category: "office", kannada: "ಕುರ್ಚಿ", hindi: "कुर्सी", english: "Chair" },
-  { category: "office", kannada: "ಸಭೆ", hindi: "बैठक", english: "Meeting" },
-  { category: "office", kannada: "ಫೈಲ್", hindi: "फ़ाइल", english: "File" },
+  { category: "office", kannada: "ಕಚೇರಿ", pronunciation: "kacheri", hindi: "दफ़्तर", english: "Office" },
+  { category: "office", kannada: "ಕಂಪ್ಯೂಟರ್", pronunciation: "computer", hindi: "कंप्यूटर", english: "Computer" },
+  { category: "office", kannada: "ಮೇಜು", pronunciation: "meju", hindi: "मेज़", english: "Table" },
+  { category: "office", kannada: "ಕುರ್ಚಿ", pronunciation: "kurchi", hindi: "कुर्सी", english: "Chair" },
+  { category: "office", kannada: "ಸಭೆ", pronunciation: "sabhe", hindi: "बैठक", english: "Meeting" },
+  { category: "office", kannada: "ಫೈಲ್", pronunciation: "file", hindi: "फ़ाइल", english: "File" },
 
   // Travel
-  { category: "travel", kannada: "ಪ್ರಯಾಣ", hindi: "यात्रा", english: "Journey" },
-  { category: "travel", kannada: "ಟಿಕೆಟ್", hindi: "टिकट", english: "Ticket" },
-  { category: "travel", kannada: "ನಿಲ್ದಾಣ", hindi: "स्टेशन", english: "Station" },
-  { category: "travel", kannada: "ಬ್ಯಾಗೇಜ್", hindi: "सामान", english: "Luggage" },
-  { category: "travel", kannada: "ಹೋಟೆಲ್", hindi: "होटल", english: "Hotel" },
-  { category: "travel", kannada: "ನಕ್ಷೆ", hindi: "नक्शा", english: "Map" },
+  { category: "travel", kannada: "ಪ್ರಯಾಣ", pronunciation: "prayaana", hindi: "यात्रा", english: "Journey" },
+  { category: "travel", kannada: "ಟಿಕೆಟ್", pronunciation: "ticket", hindi: "टिकट", english: "Ticket" },
+  { category: "travel", kannada: "ನಿಲ್ದಾಣ", pronunciation: "nildaana", hindi: "स्टेशन", english: "Station" },
+  { category: "travel", kannada: "ಬ್ಯಾಗೇಜ್", pronunciation: "baggage", hindi: "सामान", english: "Luggage" },
+  { category: "travel", kannada: "ಹೋಟೆಲ್", pronunciation: "hotel", hindi: "होटल", english: "Hotel" },
+  { category: "travel", kannada: "ನಕ್ಷೆ", pronunciation: "nakshe", hindi: "नक्शा", english: "Map" },
 
   // Food
-  { category: "food", kannada: "ಅನ್ನ", hindi: "चावल", english: "Rice" },
-  { category: "food", kannada: "ರೊಟ್ಟಿ", hindi: "रोटी", english: "Bread/Roti" },
-  { category: "food", kannada: "ಹಾಲು", hindi: "दूध", english: "Milk" },
-  { category: "food", kannada: "ಸಕ್ಕರೆ", hindi: "चीनी", english: "Sugar" },
-  { category: "food", kannada: "ಉಪ್ಪು", hindi: "नमक", english: "Salt" },
-  { category: "food", kannada: "ಚಹಾ", hindi: "चाय", english: "Tea" },
+  { category: "food", kannada: "ಅನ್ನ", pronunciation: "anna", hindi: "चावल", english: "Rice" },
+  { category: "food", kannada: "ರೊಟ್ಟಿ", pronunciation: "rotti", hindi: "रोटी", english: "Bread/Roti" },
+  { category: "food", kannada: "ಹಾಲು", pronunciation: "haalu", hindi: "दूध", english: "Milk" },
+  { category: "food", kannada: "ಸಕ್ಕರೆ", pronunciation: "sakkare", hindi: "चीनी", english: "Sugar" },
+  { category: "food", kannada: "ಉಪ್ಪು", pronunciation: "uppu", hindi: "नमक", english: "Salt" },
+  { category: "food", kannada: "ಚಹಾ", pronunciation: "chaha", hindi: "चाय", english: "Tea" },
 ];
 
 module.exports = { alphabets, numbers, words };

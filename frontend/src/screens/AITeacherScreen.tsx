@@ -1,5 +1,14 @@
 import React, { useState, useRef } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Colors } from "../constants/colors";
 import { askAITeacher } from "../services/aiService";
 
@@ -9,6 +18,11 @@ interface ChatMessage {
   text: string;
 }
 
+// This clean, standard KeyboardAvoidingView approach works correctly (exactly like
+// WhatsApp) once the app is running as a Development Build with
+// android.softwareKeyboardLayoutMode: "resize" set in app.json (see README).
+// It will NOT position perfectly inside Expo Go, because Expo Go has its own fixed
+// native shell that ignores that app.json setting.
 const AITeacherScreen: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: "welcome", role: "ai", text: "Namaskara! I'm your AI Teacher. Ask me anything about Kannada letters, words, grammar, or pronunciation." },
@@ -38,12 +52,16 @@ const AITeacherScreen: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <FlatList
         ref={listRef}
         data={messages}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16 }}
+        onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
         renderItem={({ item }) => (
           <View style={[styles.bubble, item.role === "user" ? styles.userBubble : styles.aiBubble]}>
             <Text style={item.role === "user" ? styles.userText : styles.aiText}>{item.text}</Text>
