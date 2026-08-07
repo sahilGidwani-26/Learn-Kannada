@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // same Wi-Fi). Find it with `ipconfig` (Windows) or `ifconfig`/`ipconfig getifaddr en0` (Mac).
 // Example: "http://192.168.1.42:5000/api"
 // (Android/iOS *simulators* running on the same machine as the backend can use localhost instead.)
-export const API_BASE_URL = "http://192.168.1.76:5000/api"; 
+export const API_BASE_URL = "http://learn-kannada-ten.vercel.app/api"; 
 
 const api = axios.create({
   baseURL: API_BASE_URL,

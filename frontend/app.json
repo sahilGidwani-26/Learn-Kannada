@@ -8,7 +8,9 @@
     "splash": {
       "backgroundColor": "#FF6B35"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.kannadabuddy.app",
@@ -19,7 +21,12 @@
     },
     "android": {
       "package": "com.kannadabuddy.app",
-      "permissions": ["CAMERA", "RECORD_AUDIO"],
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#FF6B35"
       },
@@ -35,6 +42,11 @@
           "cameraPermission": "Kannada Buddy needs camera access to scan Kannada text."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "29a58d2c-e9b6-4717-a06e-209cc8bff39b"
+      }
+    }
   }
 }
