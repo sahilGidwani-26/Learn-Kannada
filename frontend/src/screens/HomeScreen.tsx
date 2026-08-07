@@ -13,6 +13,7 @@ const menuItems: { label: string; emoji: string; screen: keyof RootStackParamLis
   { label: "Words", emoji: "📖", screen: "Words" },
   { label: "Camera Scan", emoji: "📷", screen: "CameraScanner" },
   { label: "AI Teacher", emoji: "🤖", screen: "AITeacher" },
+  { label: "Voice Translator", emoji: "🎤", screen: "VoiceTranslator" },
   { label: "Quiz", emoji: "❓", screen: "Quiz" },
 ];
 

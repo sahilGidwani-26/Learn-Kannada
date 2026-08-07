@@ -24,3 +24,23 @@ export const scanImage = async (imageUri: string) => {
   });
   return data.data;
 };
+
+export interface VoiceTranslateResult {
+  detectedInput: string;
+  kannada: string;
+  kannadaPronunciation: string;
+  spokenLanguage?: string;
+  message?: string;
+}
+
+export const voiceTranslate = async (audioUri: string) => {
+  const formData = new FormData();
+  // @ts-ignore - React Native's FormData accepts this shape for file uploads
+  formData.append("audio", { uri: audioUri, type: "audio/m4a", name: "speech.m4a" });
+
+  const { data } = await api.post<{ data: VoiceTranslateResult }>("/ai/voice-translate", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 60000,
+  });
+  return data.data;
+};

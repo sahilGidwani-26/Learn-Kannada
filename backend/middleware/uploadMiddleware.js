@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
+const imageFileFilter = (req, file, cb) => {
   const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
   if (allowed.includes(file.mimetype)) {
     cb(null, true);
@@ -18,10 +18,26 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+const audioFileFilter = (req, file, cb) => {
+  const allowed = ["audio/m4a", "audio/mp4", "audio/x-m4a", "audio/mpeg", "audio/wav", "audio/webm", "audio/3gpp"];
+  if (allowed.includes(file.mimetype) || file.mimetype.startsWith("audio/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only audio files are allowed"), false);
+  }
+};
+
 const upload = multer({
   storage,
-  fileFilter,
+  fileFilter: imageFileFilter,
   limits: { fileSize: 8 * 1024 * 1024 }, // 8MB
 });
 
+const uploadAudio = multer({
+  storage,
+  fileFilter: audioFileFilter,
+  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB - a minute or two of speech
+});
+
 module.exports = upload;
+module.exports.uploadAudio = uploadAudio;

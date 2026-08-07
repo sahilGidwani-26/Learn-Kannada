@@ -58,6 +58,7 @@ export type RootStackParamList = {
   CameraScanner: undefined;
   ScannerResult: { result: ScanResult };
   AITeacher: undefined;
+  VoiceTranslator: undefined;
   Quiz: { quizType: string };
   Profile: undefined;
 };

@@ -14,6 +14,7 @@ import WordsScreen from "../screens/WordsScreen";
 import CameraScannerScreen from "../screens/CameraScannerScreen";
 import ScannerResultScreen from "../screens/ScannerResultScreen";
 import AITeacherScreen from "../screens/AITeacherScreen";
+import VoiceTranslatorScreen from "../screens/VoiceTranslatorScreen";
 import QuizScreen from "../screens/QuizScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
@@ -35,6 +36,7 @@ const AppNavigator: React.FC = () => (
       <Stack.Screen name="CameraScanner" component={CameraScannerScreen} options={{ headerShown: true, title: "Scan Text" }} />
       <Stack.Screen name="ScannerResult" component={ScannerResultScreen} options={{ headerShown: true, title: "Result" }} />
       <Stack.Screen name="AITeacher" component={AITeacherScreen} options={{ headerShown: true, title: "AI Teacher" }} />
+      <Stack.Screen name="VoiceTranslator" component={VoiceTranslatorScreen} options={{ headerShown: true, title: "Voice Translator" }} />
       <Stack.Screen name="Quiz" component={QuizScreen} options={{ headerShown: true, title: "Quiz" }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true, title: "Profile" }} />
     </Stack.Navigator>

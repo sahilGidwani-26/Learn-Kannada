@@ -1,4 +1,5 @@
 const Groq = require("groq-sdk");
+const fs = require("fs");
 
 let groqClient = null;
 const getClient = () => {
@@ -29,9 +30,29 @@ const chatCompletion = async (systemPrompt, userPrompt, jsonMode = false, maxTok
     temperature: 0.4,
     max_tokens: maxTokens,
     ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-  }); 
+  });
 
   return completion.choices[0]?.message?.content || "";
 };
 
-module.exports = { chatCompletion };
+/**
+ * Speech-to-text: transcribes a recorded audio file (Hindi or English speech) to text
+ * using Groq's Whisper model. Whisper auto-detects the spoken language.
+ * @param {string} audioFilePath - path to the recorded audio file on disk
+ */
+const transcribeAudio = async (audioFilePath) => {
+  const client = getClient();
+
+  const transcription = await client.audio.transcriptions.create({
+    file: fs.createReadStream(audioFilePath),
+    model: "whisper-large-v3",
+    response_format: "verbose_json", // includes detected "language"
+  });
+
+  return {
+    text: transcription.text || "",
+    language: transcription.language || "unknown",
+  };
+};
+
+module.exports = { chatCompletion, transcribeAudio };
