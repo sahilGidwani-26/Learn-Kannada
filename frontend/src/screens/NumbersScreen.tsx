@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
+import * as Speech from "expo-speech";
 import { Colors } from "../constants/colors";
 import LetterCard from "../components/LetterCard";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -29,7 +30,11 @@ const NumbersScreen: React.FC = () => {
         contentContainerStyle={{ padding: 10 }}
         renderItem={({ item }) => (
           <View style={{ alignItems: "center", margin: 6 }}>
-            <LetterCard kannada={item.kannada} transliteration={item.englishTransliteration} />
+            <LetterCard
+              kannada={item.kannada}
+              transliteration={item.englishTransliteration}
+              onPress={() => Speech.speak(item.kannada, { language: "kn-IN" })}
+            />
             <Text style={styles.value}>{item.value}</Text>
           </View>
         )}

@@ -102,11 +102,14 @@ const AlphabetsScreen: React.FC = () => {
             <Text style={styles.modalTitle}>{selectedLetter?.letter}</Text>
             <ScrollView style={{ maxHeight: 360 }}>
               {selectedLetter?.examples.map((ex, i) => (
-                <View key={i} style={styles.exampleRow}>
-                  <Text style={styles.exampleEnglish}>{ex.english}</Text>
+                <TouchableOpacity key={i} style={styles.exampleRow} onPress={() => Speech.speak(ex.kannada, { language: "kn-IN" })}>
+                  <View style={styles.exampleHeaderRow}>
+                    <Text style={styles.exampleEnglish}>{ex.english}</Text>
+                    <Text style={styles.speakerIcon}>🔊</Text>
+                  </View>
+                  <Text style={styles.exampleKannada}>{ex.kannada} <Text style={styles.exampleKannadaPron}>({ex.pronunciation})</Text></Text>
                   <Text style={styles.exampleTranslation}>Hindi: {ex.hindi}</Text>
-                  <Text style={styles.exampleTranslation}>Kannada: {ex.kannada}</Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </ScrollView>
             <TouchableOpacity style={styles.closeBtn} onPress={() => setSelectedLetter(null)}>
@@ -130,7 +133,11 @@ const styles = StyleSheet.create({
   modalCard: { backgroundColor: Colors.card, borderRadius: 16, padding: 20, width: "100%", maxWidth: 360 },
   modalTitle: { fontSize: 36, fontWeight: "700", color: Colors.primary, textAlign: "center", marginBottom: 12 },
   exampleRow: { borderBottomWidth: 1, borderBottomColor: Colors.border, paddingVertical: 10 },
+  exampleHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  speakerIcon: { fontSize: 16 },
   exampleEnglish: { fontSize: 16, fontWeight: "700", color: Colors.textPrimary },
+  exampleKannada: { fontSize: 16, color: Colors.primary, fontWeight: "600", marginTop: 4 },
+  exampleKannadaPron: { fontSize: 13, color: Colors.textSecondary, fontStyle: "italic", fontWeight: "400" },
   exampleTranslation: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
   closeBtn: { marginTop: 16, backgroundColor: Colors.primary, borderRadius: 10, paddingVertical: 12, alignItems: "center" },
   closeBtnText: { color: "#fff", fontWeight: "600" },
