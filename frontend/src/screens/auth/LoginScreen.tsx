@@ -37,6 +37,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#888"
         autoCapitalize="none"
         keyboardType="email-address"
         value={email}
@@ -45,6 +46,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#888"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
