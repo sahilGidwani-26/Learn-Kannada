@@ -26,9 +26,15 @@ export const scanImage = async (imageUri: string) => {
 };
 
 export interface VoiceTranslateResult {
-  detectedInput: string;
-  kannada: string;
-  kannadaPronunciation: string;
+  direction: "toKannada" | "fromKannada";
+  // toKannada direction (user spoke Hindi/English):
+  detectedInput?: string;
+  kannada?: string;
+  kannadaPronunciation?: string;
+  // fromKannada direction (user spoke Kannada):
+  kannadaInput?: string;
+  hindi?: string;
+  english?: string;
   spokenLanguage?: string;
   message?: string;
 }
