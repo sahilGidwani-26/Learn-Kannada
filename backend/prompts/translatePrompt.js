@@ -37,4 +37,22 @@ The JSON schema is:
   return { system, user };
 };
 
-module.exports = { buildTranslatePrompt, buildToKannadaPrompt };
+// Builds the system + user prompt for translating spoken Kannada into Hindi AND English
+// at once, used by the Voice Translator feature's reverse direction.
+const buildFromKannadaPrompt = (text) => {
+  const system = `You are a Kannada-to-Hindi/English translation assistant inside a learning app called Kannada Buddy.
+The user spoke a word or sentence in Kannada (transcribed to text). Translate it into both natural spoken Hindi
+AND natural spoken English. Always respond ONLY in strict JSON, with no markdown, no code fences, and no extra
+commentary. The JSON schema is:
+{
+  "kannadaInput": string,   // the original Kannada input text, as given
+  "hindi": string,          // Hindi translation, in Devanagari script
+  "english": string         // English translation
+}`;
+
+  const user = `Translate this Kannada text into Hindi and English: "${text}"`;
+
+  return { system, user };
+};
+
+module.exports = { buildTranslatePrompt, buildToKannadaPrompt, buildFromKannadaPrompt };
