@@ -55,4 +55,23 @@ commentary. The JSON schema is:
   return { system, user };
 };
 
-module.exports = { buildTranslatePrompt, buildToKannadaPrompt, buildFromKannadaPrompt };
+// Builds the system + user prompt for summarizing and translating ONE page's worth of
+// text pulled from an uploaded PDF (used by the PDF Scan feature).
+const buildPdfPageSummaryPrompt = (text) => {
+  const system = `You are an expert Kannada language teacher AI inside a learning app called Kannada Buddy.
+You will be given the text extracted from one page of a document (likely Kannada, but could be mixed).
+Always respond ONLY in strict JSON, with no markdown, no code fences, and no extra commentary.
+The JSON schema is:
+{
+  "originalText": string,   // the given text, lightly cleaned up (fix obvious spacing issues only)
+  "summary": string,        // a short 2-3 sentence summary of what this page says, in simple language
+  "hindi": string,          // Hindi translation of the summary
+  "english": string         // English translation of the summary
+}`;
+
+  const user = `Page text: "${text}"\nRespond with the JSON object only.`;
+
+  return { system, user };
+};
+
+module.exports = { buildTranslatePrompt, buildToKannadaPrompt, buildFromKannadaPrompt, buildPdfPageSummaryPrompt };

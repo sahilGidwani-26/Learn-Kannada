@@ -27,6 +27,14 @@ const audioFileFilter = (req, file, cb) => {
   }
 };
 
+const pdfFileFilter = (req, file, cb) => {
+  if (file.mimetype === "application/pdf") {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF files are allowed"), false);
+  }
+};
+
 const upload = multer({
   storage,
   fileFilter: imageFileFilter,
@@ -39,5 +47,12 @@ const uploadAudio = multer({
   limits: { fileSize: 15 * 1024 * 1024 }, // 15MB - a minute or two of speech
 });
 
+const uploadPdf = multer({
+  storage,
+  fileFilter: pdfFileFilter,
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
+});
+
 module.exports = upload;
 module.exports.uploadAudio = uploadAudio;
+module.exports.uploadPdf = uploadPdf;
