@@ -55,6 +55,10 @@ const CameraScannerScreen: React.FC<Props> = ({ navigation }) => {
       <TouchableOpacity style={styles.captureBtn} onPress={handleCapture} disabled={processing}>
         <View style={styles.captureInner} />
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.pdfLink} onPress={() => navigation.navigate("PdfScan")}>
+        <Text style={styles.pdfLinkText}>📄 Advanced: Scan a PDF (up to 15 pages)</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -69,6 +73,11 @@ const styles = StyleSheet.create({
     borderWidth: 4, borderColor: "#fff", alignItems: "center", justifyContent: "center",
   },
   captureInner: { width: 58, height: 58, borderRadius: 29, backgroundColor: "#fff" },
+  pdfLink: {
+    position: "absolute", bottom: 130, alignSelf: "center", backgroundColor: "rgba(0,0,0,0.6)",
+    paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20,
+  },
+  pdfLinkText: { color: "#fff", fontSize: 13, fontWeight: "600" },
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.5)", alignItems: "center", justifyContent: "center" },
 });
 

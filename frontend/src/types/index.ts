@@ -56,6 +56,7 @@ export type RootStackParamList = {
   Numbers: undefined;
   Words: undefined;
   CameraScanner: undefined;
+  PdfScan: undefined;
   ScannerResult: { result: ScanResult };
   AITeacher: undefined;
   VoiceTranslator: undefined;

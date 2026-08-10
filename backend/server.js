@@ -11,6 +11,7 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const learningRoutes = require("./routes/learningRoutes");
 const ocrRoutes = require("./routes/ocrRoutes");
+const pdfRoutes = require("./routes/pdfRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const quizRoutes = require("./routes/quizRoutes");
 const historyRoutes = require("./routes/historyRoutes");
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/learn", learningRoutes);
 app.use("/api/ocr", ocrRoutes);
+app.use("/api/pdf", pdfRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/history", historyRoutes);
