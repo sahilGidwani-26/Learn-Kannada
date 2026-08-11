@@ -1,17 +1,19 @@
 const asyncHandler = require("../utils/asyncHandler");
 const fs = require("fs");
+const path = require("path");
+const PDFDocument = require("pdfkit");
 const { extractTextPerPage, renderAllPagesToImages } = require("../services/pdfService");
 const { extractTextFromImage } = require("../services/ocrService");
 const { chatCompletion } = require("../services/groqService");
-const { buildPdfPageSummaryPrompt } = require("../prompts/translatePrompt");
+const { buildPdfPageFullTranslatePrompt } = require("../prompts/translatePrompt");
 const History = require("../models/History");
 
 const MAX_PAGES = 15;
 
-// @desc   Upload a PDF (up to 15 pages), get a per-page summary translated into
-//         Hindi and English. Pages with a real text layer are read directly;
-//         pages that are just scanned/photographed images automatically fall
-//         back to OCR (same engine used by the Camera Scan feature).
+// @desc   Upload a PDF (up to 15 pages), get the FULL text of each page translated
+//         (not summarized) into Hindi and English. Pages with a real text layer are
+//         read directly; pages that are just scanned/photographed images automatically
+//         fall back to OCR (same engine used by the Camera Scan feature).
 // @route  POST /api/pdf/scan
 const scanPdf = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -32,8 +34,6 @@ const scanPdf = asyncHandler(async (req, res) => {
       throw new Error(`This PDF has ${numPages} pages. Please upload a PDF with ${MAX_PAGES} pages or fewer.`);
     }
 
-    // If any page came back with no embedded text, it's likely a scanned/photographed
-    // page - render every page to an image once, so we can OCR just the ones that need it.
     const needsOcr = pages.some((p) => !p || !p.trim());
     if (needsOcr) {
       console.log("[PDF] Some pages have no text layer - rendering pages to images for OCR fallback");
@@ -42,8 +42,6 @@ const scanPdf = asyncHandler(async (req, res) => {
 
     const results = [];
 
-    // Processed sequentially (not in parallel) to stay well within OCR/Groq rate limits
-    // when a PDF has many pages.
     for (let i = 0; i < pages.length; i++) {
       let pageText = pages[i];
 
@@ -63,7 +61,6 @@ const scanPdf = asyncHandler(async (req, res) => {
         results.push({
           page: i + 1,
           originalText: "",
-          summary: "",
           hindi: "",
           english: "",
           message: "No readable text could be found on this page.",
@@ -71,14 +68,15 @@ const scanPdf = asyncHandler(async (req, res) => {
         continue;
       }
 
-      const { system, user } = buildPdfPageSummaryPrompt(pageText);
-      const raw = await chatCompletion(system, user, true);
+      const { system, user } = buildPdfPageFullTranslatePrompt(pageText);
+      // Full-page translations need more room than short answers - raise the token limit.
+      const raw = await chatCompletion(system, user, true, 4096);
 
       let pageData;
       try {
         pageData = JSON.parse(raw);
       } catch {
-        pageData = { originalText: pageText, summary: "", hindi: "", english: "", raw };
+        pageData = { originalText: pageText, hindi: "", english: "", raw };
       }
 
       results.push({ page: i + 1, ...pageData });
@@ -89,7 +87,7 @@ const scanPdf = asyncHandler(async (req, res) => {
       type: "scan",
       originalText: `PDF (${numPages} pages): ${req.file.originalname}`,
       translatedText: "",
-      explanation: `Summarized ${results.length} page(s)`,
+      explanation: `Translated ${results.length} page(s)`,
     });
 
     res.json({ success: true, data: { fileName: req.file.originalname, numPages, results } });
@@ -99,4 +97,66 @@ const scanPdf = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { scanPdf };
+// Optional Unicode fonts for Kannada/Hindi script rendering in the generated PDF.
+// pdfkit's built-in fonts only support Latin script, so without these font files the
+// Kannada/Hindi text will render as blank boxes - English will always render fine.
+// To enable proper Kannada/Hindi rendering, download these two free Google fonts and
+// place them in backend/fonts/ with these exact filenames:
+//   - NotoSansKannada-Regular.ttf  (https://fonts.google.com/noto/specimen/Noto+Sans+Kannada)
+//   - NotoSansDevanagari-Regular.ttf (https://fonts.google.com/noto/specimen/Noto+Sans+Devanagari)
+const KANNADA_FONT_PATH = path.join(__dirname, "..", "fonts", "NotoSansKannada-Regular.ttf");
+const DEVANAGARI_FONT_PATH = path.join(__dirname, "..", "fonts", "NotoSansDevanagari-Regular.ttf");
+
+// @desc   Generate a downloadable PDF from already-translated page results
+//         (the results the app already fetched from /api/pdf/scan)
+// @route  POST /api/pdf/generate
+const generateTranslatedPdf = asyncHandler(async (req, res) => {
+  const { fileName, results } = req.body;
+
+  if (!results || !Array.isArray(results) || results.length === 0) {
+    res.status(400);
+    throw new Error("No page results provided");
+  }
+
+  const hasKannadaFont = fs.existsSync(KANNADA_FONT_PATH);
+  const hasDevanagariFont = fs.existsSync(DEVANAGARI_FONT_PATH);
+
+  const doc = new PDFDocument({ margin: 50 });
+  const chunks = [];
+  doc.on("data", (chunk) => chunks.push(chunk));
+  const donePromise = new Promise((resolve) => doc.on("end", () => resolve(Buffer.concat(chunks))));
+
+  if (hasKannadaFont) doc.registerFont("Kannada", KANNADA_FONT_PATH);
+  if (hasDevanagariFont) doc.registerFont("Devanagari", DEVANAGARI_FONT_PATH);
+
+  doc.font("Helvetica-Bold").fontSize(18).text(fileName || "Translated Document", { align: "center" });
+  doc.moveDown();
+
+  results.forEach((page, idx) => {
+    if (idx > 0) doc.addPage();
+
+    doc.font("Helvetica-Bold").fontSize(14).fillColor("black").text(`Page ${page.page}`, { underline: true });
+    doc.moveDown(0.5);
+
+    doc.font("Helvetica-Bold").fontSize(11).fillColor("#555").text("Original (Kannada):");
+    doc.font(hasKannadaFont ? "Kannada" : "Helvetica").fontSize(11).fillColor("black").text(page.originalText || "-");
+    doc.moveDown(0.5);
+
+    doc.font("Helvetica-Bold").fontSize(11).fillColor("#555").text("English:");
+    doc.font("Helvetica").fontSize(11).fillColor("black").text(page.english || "-");
+    doc.moveDown(0.5);
+
+    doc.font("Helvetica-Bold").fontSize(11).fillColor("#555").text("Hindi:");
+    doc.font(hasDevanagariFont ? "Devanagari" : "Helvetica").fontSize(11).fillColor("black").text(page.hindi || "-");
+    doc.moveDown();
+  });
+
+  doc.end();
+  const pdfBuffer = await donePromise;
+  const base64 = pdfBuffer.toString("base64");
+
+  const outputName = `${(fileName || "translated").replace(/\.pdf$/i, "")}-translated.pdf`;
+  res.json({ success: true, data: { pdfBase64: base64, fileName: outputName } });
+});
+
+module.exports = { scanPdf, generateTranslatedPdf };
