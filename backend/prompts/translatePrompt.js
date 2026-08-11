@@ -55,23 +55,23 @@ commentary. The JSON schema is:
   return { system, user };
 };
 
-// Builds the system + user prompt for summarizing and translating ONE page's worth of
-// text pulled from an uploaded PDF (used by the PDF Scan feature).
-const buildPdfPageSummaryPrompt = (text) => {
-  const system = `You are an expert Kannada language teacher AI inside a learning app called Kannada Buddy.
-You will be given the text extracted from one page of a document (likely Kannada, but could be mixed).
-Always respond ONLY in strict JSON, with no markdown, no code fences, and no extra commentary.
-The JSON schema is:
+// Builds the system + user prompt for translating the FULL text of one page pulled from
+// an uploaded PDF (used by the PDF Scan feature) - not a summary, the complete content.
+const buildPdfPageFullTranslatePrompt = (text) => {
+  const system = `You are an expert Kannada translator inside a learning app called Kannada Buddy.
+You will be given the FULL text extracted from one page of a document (likely Kannada, but could be
+mixed). Translate the ENTIRE text completely into both Hindi and English - do NOT summarize or shorten
+it. Every sentence, word, and detail from the original must appear in both translations. Always respond
+ONLY in strict JSON, with no markdown, no code fences, and no extra commentary. The JSON schema is:
 {
-  "originalText": string,   // the given text, lightly cleaned up (fix obvious spacing issues only)
-  "summary": string,        // a short 2-3 sentence summary of what this page says, in simple language
-  "hindi": string,          // Hindi translation of the summary
-  "english": string         // English translation of the summary
+  "originalText": string,   // the given text, lightly cleaned up (fix obvious spacing/OCR issues only, keep all content)
+  "hindi": string,          // COMPLETE Hindi translation of the entire page - not a summary
+  "english": string         // COMPLETE English translation of the entire page - not a summary
 }`;
 
-  const user = `Page text: "${text}"\nRespond with the JSON object only.`;
+  const user = `Page text: "${text}"\nTranslate this ENTIRE page fully into Hindi and English (word for word / sentence for sentence - do not summarize). Respond with the JSON object only.`;
 
   return { system, user };
 };
 
-module.exports = { buildTranslatePrompt, buildToKannadaPrompt, buildFromKannadaPrompt, buildPdfPageSummaryPrompt };
+module.exports = { buildTranslatePrompt, buildToKannadaPrompt, buildFromKannadaPrompt, buildPdfPageFullTranslatePrompt };

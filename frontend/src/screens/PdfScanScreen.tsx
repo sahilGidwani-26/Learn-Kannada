@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as Speech from "expo-speech";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 import { Colors } from "../constants/colors";
-import { scanPdf, PdfScanResponse } from "../services/pdfService";
+import { scanPdf, generateTranslatedPdf, PdfScanResponse } from "../services/pdfService";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const MAX_PAGES = 15;
 
 const PdfScanScreen: React.FC = () => {
   const [processing, setProcessing] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [result, setResult] = useState<PdfScanResponse | null>(null);
   const [expandedPage, setExpandedPage] = useState<number | null>(null);
 
@@ -43,13 +46,34 @@ const PdfScanScreen: React.FC = () => {
     if (text) Speech.speak(text, { language });
   };
 
+  const handleDownload = async () => {
+    if (!result) return;
+    setDownloading(true);
+    try {
+      const { pdfBase64, fileName } = await generateTranslatedPdf(result.fileName, result.results);
+      const documentDirectory = (FileSystem as any).documentDirectory ?? "";
+      const fileUri = `${documentDirectory}${fileName}`;
+      await FileSystem.writeAsStringAsync(fileUri, pdfBase64, { encoding: "base64" });
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri, { mimeType: "application/pdf", dialogTitle: fileName });
+      } else {
+        Alert.alert("Saved", `PDF saved to:\n${fileUri}`);
+      }
+    } catch (err: any) {
+      Alert.alert("Download failed", err.message || "Could not generate the PDF");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>PDF Scan</Text>
         <Text style={styles.subtitle}>
           Upload a PDF (up to {MAX_PAGES} pages) - typed documents or scanned/photographed book pages both work.
-          Each page gets summarized and translated into Hindi and English.
+          Every page is translated fully into Hindi and English.
         </Text>
 
         <TouchableOpacity style={styles.pickBtn} onPress={pickAndScan} disabled={processing}>
@@ -67,6 +91,10 @@ const PdfScanScreen: React.FC = () => {
             <Text style={styles.fileInfo}>
               {result.fileName} · {result.numPages} page{result.numPages !== 1 ? "s" : ""}
             </Text>
+
+            <TouchableOpacity style={styles.downloadBtn} onPress={handleDownload} disabled={downloading}>
+              <Text style={styles.downloadBtnText}>{downloading ? "Preparing PDF..." : "⬇️ Download as PDF"}</Text>
+            </TouchableOpacity>
 
             {result.results.map((page) => {
               const isOpen = expandedPage === page.page;
@@ -86,21 +114,28 @@ const PdfScanScreen: React.FC = () => {
                         <Text style={styles.pageMessage}>{page.message}</Text>
                       ) : (
                         <>
-                          <Text style={styles.sectionLabel}>Summary</Text>
-                          <Text style={styles.sectionText}>{page.summary || "-"}</Text>
+                          <View style={styles.langRow}>
+                            <Text style={styles.sectionLabel}>Original (Kannada)</Text>
+                            <TouchableOpacity onPress={() => speak(page.originalText, "kn-IN")}>
+                              <Text style={styles.speakerIcon}>🔊</Text>
+                            </TouchableOpacity>
+                          </View>
+                          <Text style={styles.sectionText}>{page.originalText || "-"}</Text>
 
                           <View style={styles.divider} />
 
                           <View style={styles.langRow}>
-                            <Text style={styles.sectionLabel}>English</Text>
+                            <Text style={styles.sectionLabel}>English (Full Translation)</Text>
                             <TouchableOpacity onPress={() => speak(page.english, "en-US")}>
                               <Text style={styles.speakerIcon}>🔊</Text>
                             </TouchableOpacity>
                           </View>
                           <Text style={styles.sectionText}>{page.english || "-"}</Text>
 
+                          <View style={styles.divider} />
+
                           <View style={styles.langRow}>
-                            <Text style={styles.sectionLabel}>Hindi</Text>
+                            <Text style={styles.sectionLabel}>Hindi (Full Translation)</Text>
                             <TouchableOpacity onPress={() => speak(page.hindi, "hi-IN")}>
                               <Text style={styles.speakerIcon}>🔊</Text>
                             </TouchableOpacity>
@@ -129,6 +164,11 @@ const styles = StyleSheet.create({
   pickBtnText: { color: "#fff", fontWeight: "700", fontSize: 15 },
   resultsWrapper: { marginTop: 24 },
   fileInfo: { fontSize: 13, color: Colors.textSecondary, marginBottom: 12, textAlign: "center" },
+  downloadBtn: {
+    backgroundColor: Colors.secondary, borderRadius: 12, paddingVertical: 14,
+    alignItems: "center", marginBottom: 16,
+  },
+  downloadBtnText: { color: "#fff", fontWeight: "700" },
   pageCard: { backgroundColor: Colors.card, borderRadius: 12, marginBottom: 10, elevation: 1, overflow: "hidden" },
   pageHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 16 },
   pageTitle: { fontSize: 15, fontWeight: "700", color: Colors.textPrimary },
