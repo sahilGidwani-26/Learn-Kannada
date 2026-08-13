@@ -29,6 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
       xp: user.xp,
       coins: user.coins,
       level: user.level,
+      quizLevel: user.quizLevel,
     },
     token: generateToken(user._id),
   });
@@ -59,6 +60,7 @@ const loginUser = asyncHandler(async (req, res) => {
       xp: user.xp,
       coins: user.coins,
       level: user.level,
+      quizLevel: user.quizLevel,
     },
     token: generateToken(user._id),
   });

@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
     coins: { type: Number, default: 0 },
     stars: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
+    quizLevel: { type: Number, default: 1, min: 1, max: 100 }, // progress through the 100-level learning game
     badges: [{ type: String }],
     isVerified: { type: Boolean, default: false },
     parentEmail: { type: String, default: null }, // links kid account to a parent dashboard

@@ -5,6 +5,7 @@ export interface User {
   xp: number;
   coins: number;
   level: number;
+  quizLevel?: number;
 }
 
 export interface Alphabet {
@@ -45,6 +46,24 @@ export interface ScanResult {
   exampleSentence?: { kannada: string; hindi: string; english: string };
 }
 
+export interface QuizQuestion {
+  id: string;
+  type: "vowel" | "consonant" | "number" | "wordToEnglish" | "englishToWord" | "wordToHindi" | "sentence" | "voice";
+  mode: "mcq" | "voice";
+  prompt: string;
+  promptLabel: string;
+  correctAnswer: string;
+  correctAnswerPronunciation?: string;
+  options?: string[];
+}
+
+export interface QuizLevelData {
+  level: number;
+  totalLevels: number;
+  type: string;
+  questions: QuizQuestion[];
+}
+
 // Root stack param list - add new screens here as the app grows
 export type RootStackParamList = {
   Splash: undefined;
@@ -60,6 +79,6 @@ export type RootStackParamList = {
   ScannerResult: { result: ScanResult };
   AITeacher: undefined;
   VoiceTranslator: undefined;
-  Quiz: { quizType: string };
+  Quiz: { level?: number } | undefined;
   Profile: undefined;
 };

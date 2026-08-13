@@ -28,7 +28,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.statsRow}>
         <Stat label="XP" value={user?.xp ?? 0} />
         <Stat label="Coins" value={user?.coins ?? 0} />
-        <Stat label="Level" value={user?.level ?? 1} />
+        <Stat label="Quiz Level" value={user?.quizLevel ?? 1} />
       </View>
 
       <View style={styles.grid}>
@@ -37,7 +37,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             key={item.label}
             style={styles.tile}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate(item.screen as any, item.screen === "Quiz" ? { quizType: "letter" } : undefined)}
+            onPress={() => navigation.navigate(item.screen as any)}
           >
             <Text style={styles.tileEmoji}>{item.emoji}</Text>
             <Text style={styles.tileLabel}>{item.label}</Text>
