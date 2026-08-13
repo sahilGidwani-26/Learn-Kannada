@@ -8,7 +8,7 @@ const { chatCompletion } = require("../services/groqService");
 const { buildPdfPageFullTranslatePrompt } = require("../prompts/translatePrompt");
 const History = require("../models/History");
 
-const MAX_PAGES = 15;
+const MAX_PAGES = 105;
 
 // @desc   Upload a PDF (up to 15 pages), get the FULL text of each page translated
 //         (not summarized) into Hindi and English. Pages with a real text layer are

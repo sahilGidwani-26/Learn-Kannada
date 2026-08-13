@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as Speech from "expo-speech";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { Colors } from "../constants/colors";
 import { scanPdf, generateTranslatedPdf, PdfScanResponse } from "../services/pdfService";
@@ -10,11 +10,43 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 const MAX_PAGES = 15;
 
+interface Token {
+  word: string;
+  start: number;
+  end: number;
+}
+
+// Splits text into words while remembering each word's character offset in the
+// original string, so we can match it against expo-speech's onBoundary charIndex.
+const tokenize = (text: string): Token[] => {
+  const tokens: Token[] = [];
+  const regex = /\S+/g;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(text)) !== null) {
+    tokens.push({ word: match[0], start: match.index, end: match.index + match[0].length });
+  }
+  return tokens;
+};
+
+interface SpeakingState {
+  key: string;
+  tokens: Token[];
+  activeIndex: number;
+}
+
 const PdfScanScreen: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [result, setResult] = useState<PdfScanResponse | null>(null);
   const [expandedPage, setExpandedPage] = useState<number | null>(null);
+  const [speaking, setSpeaking] = useState<SpeakingState | null>(null);
+
+  // Stop any speech in progress if the user leaves this screen.
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
 
   const pickAndScan = async () => {
     try {
@@ -42,8 +74,40 @@ const PdfScanScreen: React.FC = () => {
     }
   };
 
-  const speak = (text: string, language: "hi-IN" | "en-US" | "kn-IN") => {
-    if (text) Speech.speak(text, { language });
+  // Tap once to start reading aloud with word-by-word highlighting; tap the same
+  // button again (while it's speaking) to stop.
+  const toggleSpeak = (key: string, text: string, language: "hi-IN" | "en-US" | "kn-IN") => {
+    if (!text) return;
+
+    if (speaking?.key === key) {
+      Speech.stop();
+      setSpeaking(null);
+      return;
+    }
+
+    Speech.stop(); // stop whatever else might be playing first
+    const tokens = tokenize(text);
+    setSpeaking({ key, tokens, activeIndex: -1 });
+
+    Speech.speak(text, {
+      language,
+      onBoundary: (event: any) => {
+        const charIndex = event?.charIndex ?? 0;
+        setSpeaking((prev) => {
+          if (!prev || prev.key !== key) return prev;
+          let idx = prev.tokens.findIndex((t) => charIndex >= t.start && charIndex < t.end);
+          if (idx === -1) {
+            // Some platforms report boundaries slightly off - fall back to the
+            // last word whose start is at or before this position.
+            idx = prev.tokens.reduce((acc, t, i) => (t.start <= charIndex ? i : acc), prev.activeIndex);
+          }
+          return { ...prev, activeIndex: idx };
+        });
+      },
+      onDone: () => setSpeaking((prev) => (prev?.key === key ? null : prev)),
+      onStopped: () => setSpeaking((prev) => (prev?.key === key ? null : prev)),
+      onError: () => setSpeaking((prev) => (prev?.key === key ? null : prev)),
+    });
   };
 
   const handleDownload = async () => {
@@ -51,9 +115,8 @@ const PdfScanScreen: React.FC = () => {
     setDownloading(true);
     try {
       const { pdfBase64, fileName } = await generateTranslatedPdf(result.fileName, result.results);
-      const documentDirectory = (FileSystem as any).documentDirectory ?? "";
-      const fileUri = `${documentDirectory}${fileName}`;
-      await FileSystem.writeAsStringAsync(fileUri, pdfBase64, { encoding: "base64" });
+      const fileUri = FileSystem.documentDirectory + fileName;
+      await FileSystem.writeAsStringAsync(fileUri, pdfBase64, { encoding: FileSystem.EncodingType.Base64 });
 
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(fileUri, { mimeType: "application/pdf", dialogTitle: fileName });
@@ -65,6 +128,35 @@ const PdfScanScreen: React.FC = () => {
     } finally {
       setDownloading(false);
     }
+  };
+
+  // Renders text as individual words so the currently-spoken one can be bolded/highlighted.
+  const renderReadableText = (key: string, text: string) => {
+    if (speaking?.key === key) {
+      return (
+        <Text style={styles.sectionText}>
+          {speaking.tokens.map((t, i) => (
+            <Text key={i} style={i === speaking.activeIndex ? styles.activeWord : undefined}>
+              {t.word}{" "}
+            </Text>
+          ))}
+        </Text>
+      );
+    }
+    return <Text style={styles.sectionText}>{text || "-"}</Text>;
+  };
+
+  const SpeakerButton: React.FC<{ speakKey: string; text: string; language: "hi-IN" | "en-US" | "kn-IN" }> = ({
+    speakKey,
+    text,
+    language,
+  }) => {
+    const isActive = speaking?.key === speakKey;
+    return (
+      <TouchableOpacity onPress={() => toggleSpeak(speakKey, text, language)}>
+        <Text style={styles.speakerIcon}>{isActive ? "⏹" : "🔊"}</Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -116,31 +208,25 @@ const PdfScanScreen: React.FC = () => {
                         <>
                           <View style={styles.langRow}>
                             <Text style={styles.sectionLabel}>Original (Kannada)</Text>
-                            <TouchableOpacity onPress={() => speak(page.originalText, "kn-IN")}>
-                              <Text style={styles.speakerIcon}>🔊</Text>
-                            </TouchableOpacity>
+                            <SpeakerButton speakKey={`${page.page}-kn`} text={page.originalText} language="kn-IN" />
                           </View>
-                          <Text style={styles.sectionText}>{page.originalText || "-"}</Text>
+                          {renderReadableText(`${page.page}-kn`, page.originalText)}
 
                           <View style={styles.divider} />
 
                           <View style={styles.langRow}>
                             <Text style={styles.sectionLabel}>English (Full Translation)</Text>
-                            <TouchableOpacity onPress={() => speak(page.english, "en-US")}>
-                              <Text style={styles.speakerIcon}>🔊</Text>
-                            </TouchableOpacity>
+                            <SpeakerButton speakKey={`${page.page}-en`} text={page.english} language="en-US" />
                           </View>
-                          <Text style={styles.sectionText}>{page.english || "-"}</Text>
+                          {renderReadableText(`${page.page}-en`, page.english)}
 
                           <View style={styles.divider} />
 
                           <View style={styles.langRow}>
                             <Text style={styles.sectionLabel}>Hindi (Full Translation)</Text>
-                            <TouchableOpacity onPress={() => speak(page.hindi, "hi-IN")}>
-                              <Text style={styles.speakerIcon}>🔊</Text>
-                            </TouchableOpacity>
+                            <SpeakerButton speakKey={`${page.page}-hi`} text={page.hindi} language="hi-IN" />
                           </View>
-                          <Text style={styles.sectionText}>{page.hindi || "-"}</Text>
+                          {renderReadableText(`${page.page}-hi`, page.hindi)}
                         </>
                       )}
                     </View>
@@ -176,10 +262,11 @@ const styles = StyleSheet.create({
   pageBody: { paddingHorizontal: 16, paddingBottom: 16 },
   pageMessage: { color: Colors.textSecondary, fontStyle: "italic" },
   sectionLabel: { fontSize: 11, fontWeight: "700", color: Colors.textSecondary, textTransform: "uppercase", marginTop: 8 },
-  sectionText: { fontSize: 14, color: Colors.textPrimary, marginTop: 4, lineHeight: 20 },
+  sectionText: { fontSize: 14, color: Colors.textPrimary, marginTop: 4, lineHeight: 22 },
+  activeWord: { fontWeight: "800", color: Colors.primary, backgroundColor: "#FFE9DC" },
   divider: { height: 1, backgroundColor: Colors.border, marginVertical: 10 },
   langRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10 },
-  speakerIcon: { fontSize: 16 },
+  speakerIcon: { fontSize: 18 },
 });
 
 export default PdfScanScreen;
