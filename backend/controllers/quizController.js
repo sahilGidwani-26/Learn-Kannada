@@ -5,8 +5,7 @@ const User = require("../models/User");
 const { generateLevelQuestions, getLevelType, mapToQuizAttemptType } = require("../utils/quizGenerator");
 const { transcribeAudio } = require("../services/groqService");
 
-// @desc   Submit a completed quiz attempt, award XP/coins
-// @route  POST /api/quiz/submit
+
 const submitQuiz = asyncHandler(async (req, res) => {
   const { quizType, totalQuestions, correctAnswers } = req.body;
 
@@ -31,7 +30,7 @@ const submitQuiz = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   user.xp += xpEarned;
   user.coins += coinsEarned;
-  user.level = Math.floor(user.xp / 500) + 1; // simple leveling curve, tune as needed
+  user.level = Math.floor(user.xp / 500) + 1;
   await user.save();
 
   res.status(201).json({
@@ -41,24 +40,20 @@ const submitQuiz = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc   Get quiz history for the logged-in user
-// @route  GET /api/quiz/history
+
 const getQuizHistory = asyncHandler(async (req, res) => {
   const attempts = await QuizAttempt.find({ user: req.user._id }).sort({ createdAt: -1 }).limit(50);
   res.json({ success: true, data: attempts });
 });
 
-// @desc   Get 10 questions for a given level (1-100) of the progressive learning game
-// @route  GET /api/quiz/level/:level
+
 const getLevelQuestions = asyncHandler(async (req, res) => {
   const level = Math.max(1, Math.min(100, parseInt(req.params.level, 10) || 1));
   const data = await generateLevelQuestions(level);
   res.json({ success: true, data });
 });
 
-// @desc   Submit the result of a completed level (10 questions). Advances the user's
-//         quizLevel by one if they scored 70% or higher, and awards XP/coins.
-// @route  POST /api/quiz/level/:level/submit
+
 const submitLevel = asyncHandler(async (req, res) => {
   const level = Math.max(1, Math.min(100, parseInt(req.params.level, 10) || 1));
   const { totalQuestions, correctAnswers } = req.body;
@@ -69,7 +64,7 @@ const submitLevel = asyncHandler(async (req, res) => {
   }
 
   const accuracyPct = totalQuestions > 0 ? correctAnswers / totalQuestions : 0;
-  const passed = accuracyPct >= 0.7; // need 70%+ correct to advance to the next level
+  const passed = accuracyPct >= 0.7;
 
   const xpEarned = Math.round(correctAnswers * 10 * (1 + accuracyPct));
   const coinsEarned = Math.round(correctAnswers * 2);

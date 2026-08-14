@@ -53,9 +53,6 @@ const getTeacherHistory = asyncHandler(async (req, res) => {
 });
 
 // @desc   Voice Translator: listens to recorded speech and translates it.
-//         - If the speaker spoke Hindi/English, translates it INTO Kannada.
-//         - If the speaker spoke Kannada, translates it into BOTH Hindi and English
-//           (the app lets the user pick which one to hear).
 // @route  POST /api/ai/voice-translate
 const voiceTranslate = asyncHandler(async (req, res) => {
   if (!req.file) {
