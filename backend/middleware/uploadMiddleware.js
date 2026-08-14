@@ -1,8 +1,17 @@
 const multer = require("multer");
 const path = require("path");
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, "..", "uploads")),
+  destination: (req, file, cb) => {
+    const uploadPath = isProduction
+      ? "/tmp"
+      : path.join(__dirname, "..", "uploads");
+
+    cb(null, uploadPath);
+  },
+
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
@@ -11,6 +20,7 @@ const storage = multer.diskStorage({
 
 const imageFileFilter = (req, file, cb) => {
   const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
   if (allowed.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -19,7 +29,16 @@ const imageFileFilter = (req, file, cb) => {
 };
 
 const audioFileFilter = (req, file, cb) => {
-  const allowed = ["audio/m4a", "audio/mp4", "audio/x-m4a", "audio/mpeg", "audio/wav", "audio/webm", "audio/3gpp"];
+  const allowed = [
+    "audio/m4a",
+    "audio/mp4",
+    "audio/x-m4a",
+    "audio/mpeg",
+    "audio/wav",
+    "audio/webm",
+    "audio/3gpp",
+  ];
+
   if (allowed.includes(file.mimetype) || file.mimetype.startsWith("audio/")) {
     cb(null, true);
   } else {
@@ -38,19 +57,25 @@ const pdfFileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 8 * 1024 * 1024 }, // 8MB
+  limits: {
+    fileSize: 8 * 1024 * 1024,
+  },
 });
 
 const uploadAudio = multer({
   storage,
   fileFilter: audioFileFilter,
-  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB - a minute or two of speech
+  limits: {
+    fileSize: 15 * 1024 * 1024,
+  },
 });
 
 const uploadPdf = multer({
   storage,
   fileFilter: pdfFileFilter,
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
+  limits: {
+    fileSize: 25 * 1024 * 1024,
+  },
 });
 
 module.exports = upload;
