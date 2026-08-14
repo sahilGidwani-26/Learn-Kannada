@@ -10,11 +10,6 @@ const History = require("../models/History");
 
 const MAX_PAGES = 105;
 
-// @desc   Upload a PDF (up to 15 pages), get the FULL text of each page translated
-//         (not summarized) into Hindi and English. Pages with a real text layer are
-//         read directly; pages that are just scanned/photographed images automatically
-//         fall back to OCR (same engine used by the Camera Scan feature).
-// @route  POST /api/pdf/scan
 const scanPdf = asyncHandler(async (req, res) => {
   if (!req.file) {
     res.status(400);
@@ -97,19 +92,11 @@ const scanPdf = asyncHandler(async (req, res) => {
   }
 });
 
-// Optional Unicode fonts for Kannada/Hindi script rendering in the generated PDF.
-// pdfkit's built-in fonts only support Latin script, so without these font files the
-// Kannada/Hindi text will render as blank boxes - English will always render fine.
-// To enable proper Kannada/Hindi rendering, download these two free Google fonts and
-// place them in backend/fonts/ with these exact filenames:
-//   - NotoSansKannada-Regular.ttf  (https://fonts.google.com/noto/specimen/Noto+Sans+Kannada)
-//   - NotoSansDevanagari-Regular.ttf (https://fonts.google.com/noto/specimen/Noto+Sans+Devanagari)
+
 const KANNADA_FONT_PATH = path.join(__dirname, "..", "fonts", "NotoSansKannada-Regular.ttf");
 const DEVANAGARI_FONT_PATH = path.join(__dirname, "..", "fonts", "NotoSansDevanagari-Regular.ttf");
 
-// @desc   Generate a downloadable PDF from already-translated page results
-//         (the results the app already fetched from /api/pdf/scan)
-// @route  POST /api/pdf/generate
+
 const generateTranslatedPdf = asyncHandler(async (req, res) => {
   const { fileName, results } = req.body;
 
