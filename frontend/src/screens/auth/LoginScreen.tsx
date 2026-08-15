@@ -12,6 +12,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -37,20 +38,26 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Email"
-        placeholderTextColor="#888"
+        placeholderTextColor={Colors.textSecondary}
         autoCapitalize="none"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#888"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+
+      <View style={styles.passwordRow}>
+        <TextInput
+          style={[styles.input, styles.passwordInput]}
+          placeholder="Password"
+          placeholderTextColor={Colors.textSecondary}
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword((s) => !s)}>
+          <Text style={styles.eyeIcon}>{showPassword ? "🙈" : "👁️"}</Text>
+        </TouchableOpacity>
+      </View>
 
       <AppButton title="Login" onPress={handleLogin} loading={loading} style={{ marginTop: 8 }} />
 
@@ -72,7 +79,12 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 12,
     fontSize: 15,
+    color: Colors.textPrimary,
   },
+  passwordRow: { position: "relative", justifyContent: "center" },
+  passwordInput: { paddingRight: 48 },
+  eyeBtn: { position: "absolute", right: 14, top: 0, bottom: 12, justifyContent: "center" },
+  eyeIcon: { fontSize: 18 },
   link: { color: Colors.primary, textAlign: "center", fontWeight: "500" },
 });
 
