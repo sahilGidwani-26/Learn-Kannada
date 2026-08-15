@@ -11,6 +11,18 @@ export const askAITeacher = async (question: string) => {
   return data.data;
 };
 
+export const askAITeacherVoice = async (audioUri: string) => {
+  const formData = new FormData();
+  // @ts-ignore - React Native's FormData accepts this shape for file uploads
+  formData.append("audio", { uri: audioUri, type: "audio/m4a", name: "question.m4a" });
+
+  const { data } = await api.post<{ data: { question: string; answer: string } }>("/ai/teacher/voice", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 60000,
+  });
+  return data.data;
+};
+
 export const scanImage = async (imageUri: string) => {
   const formData = new FormData();
   // @ts-ignore - React Native's FormData accepts this shape for file uploads

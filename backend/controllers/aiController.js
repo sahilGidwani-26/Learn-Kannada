@@ -53,6 +53,9 @@ const getTeacherHistory = asyncHandler(async (req, res) => {
 });
 
 // @desc   Voice Translator: listens to recorded speech and translates it.
+//         - If the speaker spoke Hindi/English, translates it INTO Kannada.
+//         - If the speaker spoke Kannada, translates it into BOTH Hindi and English
+//           (the app lets the user pick which one to hear).
 // @route  POST /api/ai/voice-translate
 const voiceTranslate = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -106,4 +109,37 @@ const voiceTranslate = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { translateText, askTeacher, getTeacherHistory, voiceTranslate };
+// @desc   Ask the AI Teacher a question by voice - transcribes the recording and
+//         answers it in one step (used by the mic button in the AI Teacher chat)
+// @route  POST /api/ai/teacher/voice
+const askTeacherVoice = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    res.status(400);
+    throw new Error("Please upload an audio file");
+  }
+
+  const audioPath = req.file.path;
+
+  try {
+    const { text: question } = await transcribeAudio(audioPath);
+
+    if (!question || !question.trim()) {
+      return res.json({
+        success: true,
+        data: { question: "", answer: "Sorry, I couldn't hear that clearly. Please try again." },
+      });
+    }
+
+    const ageGroup = req.user?.ageGroup || "adult";
+    const { system, user } = buildTeacherPrompt(question, ageGroup);
+    const answer = await chatCompletion(system, user, false);
+
+    await AIChat.create({ user: req.user._id, question, answer });
+
+    res.json({ success: true, data: { question, answer } });
+  } finally {
+    fs.unlink(audioPath, () => {});
+  }
+});
+
+module.exports = { translateText, askTeacher, askTeacherVoice, getTeacherHistory, voiceTranslate };

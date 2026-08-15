@@ -13,6 +13,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
@@ -39,22 +40,36 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
 
-      <TextInput style={styles.input} placeholder="Full Name" value={name} onChangeText={setName} />
+      <TextInput
+        style={styles.input}
+        placeholder="Full Name"
+        placeholderTextColor={Colors.textSecondary}
+        value={name}
+        onChangeText={setName}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor={Colors.textSecondary}
         autoCapitalize="none"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password (min 6 characters)"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+
+      <View style={styles.passwordRow}>
+        <TextInput
+          style={[styles.input, styles.passwordInput]}
+          placeholder="Password (min 6 characters)"
+          placeholderTextColor={Colors.textSecondary}
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword((s) => !s)}>
+          <Text style={styles.eyeIcon}>{showPassword ? "🙈" : "👁️"}</Text>
+        </TouchableOpacity>
+      </View>
 
       <AppButton title="Register" onPress={handleRegister} loading={loading} style={{ marginTop: 8 }} />
 
@@ -76,7 +91,12 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 12,
     fontSize: 15,
+    color: Colors.textPrimary,
   },
+  passwordRow: { position: "relative", justifyContent: "center" },
+  passwordInput: { paddingRight: 48 },
+  eyeBtn: { position: "absolute", right: 14, top: 0, bottom: 12, justifyContent: "center" },
+  eyeIcon: { fontSize: 18 },
   link: { color: Colors.primary, textAlign: "center", fontWeight: "500" },
 });
 
