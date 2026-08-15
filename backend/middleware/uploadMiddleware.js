@@ -1,17 +1,12 @@
 const multer = require("multer");
 const path = require("path");
-
-const isProduction = process.env.NODE_ENV === "production";
+const os = require("os");
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = isProduction
-      ? "/tmp"
-      : path.join(__dirname, "..", "uploads");
-
-    cb(null, uploadPath);
-  },
-
+  // Serverless platforms (Vercel, AWS Lambda, etc.) only allow writes to the OS temp
+  // directory - the rest of the deployed project is read-only. os.tmpdir() resolves to
+  // that writable temp folder in production, and to a normal temp folder locally too.
+  destination: (req, file, cb) => cb(null, os.tmpdir()),
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
@@ -20,7 +15,6 @@ const storage = multer.diskStorage({
 
 const imageFileFilter = (req, file, cb) => {
   const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-
   if (allowed.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -29,16 +23,7 @@ const imageFileFilter = (req, file, cb) => {
 };
 
 const audioFileFilter = (req, file, cb) => {
-  const allowed = [
-    "audio/m4a",
-    "audio/mp4",
-    "audio/x-m4a",
-    "audio/mpeg",
-    "audio/wav",
-    "audio/webm",
-    "audio/3gpp",
-  ];
-
+  const allowed = ["audio/m4a", "audio/mp4", "audio/x-m4a", "audio/mpeg", "audio/wav", "audio/webm", "audio/3gpp"];
   if (allowed.includes(file.mimetype) || file.mimetype.startsWith("audio/")) {
     cb(null, true);
   } else {
@@ -57,25 +42,19 @@ const pdfFileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter: imageFileFilter,
-  limits: {
-    fileSize: 8 * 1024 * 1024,
-  },
+  limits: { fileSize: 8 * 1024 * 1024 }, // 8MB
 });
 
 const uploadAudio = multer({
   storage,
   fileFilter: audioFileFilter,
-  limits: {
-    fileSize: 15 * 1024 * 1024,
-  },
+  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB - a minute or two of speech
 });
 
 const uploadPdf = multer({
   storage,
   fileFilter: pdfFileFilter,
-  limits: {
-    fileSize: 25 * 1024 * 1024,
-  },
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
 });
 
 module.exports = upload;
