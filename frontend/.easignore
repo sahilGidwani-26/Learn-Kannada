@@ -1,0 +1,11 @@
+android/.gradle
+android/build
+android/app/build
+android/app/.cxx
+android/.idea
+ios/build
+ios/Pods
+
+node_modules
+.expo
+*.log
