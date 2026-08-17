@@ -25,6 +25,23 @@ interface Token {
   end: number;
 }
 
+type Speed = "slow" | "normal" | "fast";
+const SPEED_RATES: Record<Speed, number> = { slow: 0.7, normal: 1.0, fast: 1.3 };
+
+// Removes emojis, markdown symbols, and stray punctuation (----, ||, //, ==, etc.) so
+// the TTS engine doesn't try to read them out loud. The chat bubble still shows the
+// original text - this cleaned version is only used for speech + highlighting.
+const sanitizeForSpeech = (text: string): string =>
+  text
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\uFE0F]/gu, "")
+    .replace(/[*_`~#>]/g, "")
+    .replace(/-{2,}/g, " ")
+    .replace(/\|+/g, " ")
+    .replace(/\/{2,}/g, " ")
+    .replace(/={2,}/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 // Splits text into words while remembering each word's character offset, so we can
 // match it against expo-speech's onBoundary charIndex for karaoke-style highlighting.
 const tokenize = (text: string): Token[] => {
@@ -50,6 +67,7 @@ const AITeacherScreen: React.FC = () => {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [speaking, setSpeaking] = useState<SpeakingState | null>(null);
+  const [speed, setSpeed] = useState<Speed>("normal");
 
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -103,7 +121,8 @@ const AITeacherScreen: React.FC = () => {
     }
   };
 
-  // Stopping the recording automatically sends the question - no extra tap needed.
+  // Stopping the recording automatically sends the question AND speaks the answer back
+  // out loud once it arrives - like a voice assistant, not just a text reply.
   const stopRecordingAndSend = async () => {
     if (!recording) return;
     setIsRecording(false);
@@ -120,7 +139,11 @@ const AITeacherScreen: React.FC = () => {
       if (question) {
         setMessages((prev) => [...prev, { id: `${Date.now()}-u`, role: "user", text: question }]);
       }
-      setMessages((prev) => [...prev, { id: `${Date.now()}-a`, role: "ai", text: answer }]);
+      const aiMessageId = `${Date.now()}-a`;
+      setMessages((prev) => [...prev, { id: aiMessageId, role: "ai", text: answer }]);
+
+      // Auto-speak the answer since this question was asked by voice.
+      setTimeout(() => startSpeaking(aiMessageId, answer), 300);
     } catch (err: any) {
       Alert.alert("Couldn't process your question", err.message);
     } finally {
@@ -130,21 +153,17 @@ const AITeacherScreen: React.FC = () => {
   };
 
   // ---------- Read AI answers aloud, word-by-word highlighted ----------
-  const toggleSpeak = (key: string, text: string) => {
-    if (!text) return;
-
-    if (speaking?.key === key) {
-      Speech.stop();
-      setSpeaking(null);
-      return;
-    }
+  const startSpeaking = (key: string, rawText: string) => {
+    if (!rawText) return;
 
     Speech.stop();
-    const tokens = tokenize(text);
+    const cleanText = sanitizeForSpeech(rawText);
+    const tokens = tokenize(cleanText);
     setSpeaking({ key, tokens, activeIndex: -1 });
 
-    Speech.speak(text, {
+    Speech.speak(cleanText, {
       language: "en-US",
+      rate: SPEED_RATES[speed],
       onBoundary: (event: any) => {
         const charIndex = event?.charIndex ?? 0;
         setSpeaking((prev) => {
@@ -160,6 +179,15 @@ const AITeacherScreen: React.FC = () => {
       onStopped: () => setSpeaking((prev) => (prev?.key === key ? null : prev)),
       onError: () => setSpeaking((prev) => (prev?.key === key ? null : prev)),
     });
+  };
+
+  const toggleSpeak = (key: string, text: string) => {
+    if (speaking?.key === key) {
+      Speech.stop();
+      setSpeaking(null);
+      return;
+    }
+    startSpeaking(key, text);
   };
 
   const renderAiText = (key: string, text: string) => {
@@ -179,6 +207,21 @@ const AITeacherScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.speedRow}>
+        <Text style={styles.speedLabel}>Reading speed:</Text>
+        {(["slow", "normal", "fast"] as Speed[]).map((opt) => (
+          <TouchableOpacity
+            key={opt}
+            style={[styles.speedChip, speed === opt && styles.speedChipActive]}
+            onPress={() => setSpeed(opt)}
+          >
+            <Text style={[styles.speedChipText, speed === opt && styles.speedChipTextActive]}>
+              {opt === "slow" ? "Slow" : opt === "normal" ? "Normal" : "Fast"}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <FlatList
         ref={listRef}
         data={messages}
@@ -227,7 +270,16 @@ const AITeacherScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  bubble: { maxWidth: "85%", borderRadius: 14, padding: 12, marginBottom: 10 },
+  speedRow: {
+    flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingTop: 10, paddingBottom: 4,
+    backgroundColor: Colors.card, borderBottomWidth: 1, borderBottomColor: Colors.border,
+  },
+  speedLabel: { fontSize: 12, color: Colors.textSecondary, marginRight: 8 },
+  speedChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, backgroundColor: Colors.background, marginRight: 6 },
+  speedChipActive: { backgroundColor: Colors.primary },
+  speedChipText: { fontSize: 12, color: Colors.textSecondary, fontWeight: "600" },
+  speedChipTextActive: { color: "#fff" },
+  bubble: { maxWidth: "85%", borderRadius: 14, padding: 12, marginBottom: 10, marginTop: 4 },
   userBubble: { alignSelf: "flex-end", backgroundColor: Colors.primary },
   aiBubble: { alignSelf: "flex-start", backgroundColor: Colors.card },
   userText: { color: "#fff" },
