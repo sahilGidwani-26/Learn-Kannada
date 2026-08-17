@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Audio } from "expo-av";
 import * as Speech from "expo-speech";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
 import { askAITeacher, askAITeacherVoice } from "../services/aiService";
 
@@ -206,7 +207,7 @@ const AITeacherScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.speedRow}>
         <Text style={styles.speedLabel}>Reading speed:</Text>
         {(["slow", "normal", "fast"] as Speed[]).map((opt) => (
@@ -264,7 +265,7 @@ const AITeacherScreen: React.FC = () => {
           <Text style={styles.sendText}>{sending ? "..." : "Send"}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
 import { useAuth } from "../context/AuthContext";
 import AppButton from "../components/AppButton";
@@ -15,7 +16,7 @@ const ProfileScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>{user?.name?.charAt(0).toUpperCase() || "U"}</Text>
       </View>
@@ -29,7 +30,7 @@ const ProfileScreen: React.FC = () => {
       </View>
 
       <AppButton title="Log Out" variant="outline" onPress={handleLogout} style={{ marginTop: 30, width: "100%" }} />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -41,7 +42,7 @@ const Stat: React.FC<{ label: string; value: number }> = ({ label, value }) => (
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background, alignItems: "center", padding: 24, paddingTop: 60 },
+  container: { flex: 1, backgroundColor: Colors.background, alignItems: "center", padding: 24 },
   avatar: { width: 84, height: 84, borderRadius: 42, backgroundColor: Colors.primary, alignItems: "center", justifyContent: "center", marginBottom: 16 },
   avatarText: { fontSize: 32, color: "#fff", fontWeight: "700" },
   name: { fontSize: 20, fontWeight: "700", color: Colors.textPrimary },
