@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Modal, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Speech from "expo-speech";
 import { Colors } from "../constants/colors";
 import LetterCard from "../components/LetterCard";
@@ -37,7 +38,7 @@ const AlphabetsScreen: React.FC = () => {
   }, [tab]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.tabs}>
         <TouchableOpacity onPress={() => setTab("vowel")} style={[styles.tab, tab === "vowel" && styles.tabActive]}>
           <Text style={[styles.tabText, tab === "vowel" && styles.tabTextActive]}>Vowels (ಸ್ವರ)</Text>
@@ -118,7 +119,7 @@ const AlphabetsScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
 import { useAuth } from "../context/AuthContext";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -21,30 +22,32 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ padding: 20 }}>
-      <Text style={styles.greeting}>Namaskara, {user?.name?.split(" ")[0] || "Buddy"} 👋</Text>
-      <Text style={styles.subtitle}>What do you want to learn today?</Text>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <Text style={styles.greeting}>Namaskara, {user?.name?.split(" ")[0] || "Buddy"} 👋</Text>
+        <Text style={styles.subtitle}>What do you want to learn today?</Text>
 
-      <View style={styles.statsRow}>
-        <Stat label="XP" value={user?.xp ?? 0} />
-        <Stat label="Coins" value={user?.coins ?? 0} />
-        <Stat label="Quiz Level" value={user?.quizLevel ?? 1} />
-      </View>
+        <View style={styles.statsRow}>
+          <Stat label="XP" value={user?.xp ?? 0} />
+          <Stat label="Coins" value={user?.coins ?? 0} />
+          <Stat label="Quiz Level" value={user?.quizLevel ?? 1} />
+        </View>
 
-      <View style={styles.grid}>
-        {menuItems.map((item) => (
-          <TouchableOpacity
-            key={item.label}
-            style={styles.tile}
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate(item.screen as any)}
-          >
-            <Text style={styles.tileEmoji}>{item.emoji}</Text>
-            <Text style={styles.tileLabel}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+        <View style={styles.grid}>
+          {menuItems.map((item) => (
+            <TouchableOpacity
+              key={item.label}
+              style={styles.tile}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate(item.screen as any)}
+            >
+              <Text style={styles.tileEmoji}>{item.emoji}</Text>
+              <Text style={styles.tileLabel}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
