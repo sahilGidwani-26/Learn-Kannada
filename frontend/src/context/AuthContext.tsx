@@ -20,17 +20,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     (async () => {
+      console.log("[AuthContext] App starting - checking stored session...");
       const stored = await authService.getStoredUser();
+      console.log("[AuthContext] Stored user found:", stored ? stored.email : "NONE");
 
       if (stored) {
-        // Only keep the session if the user was active within the last 2 days.
         const isValid = await authService.checkSessionValidity();
         if (isValid) {
+          console.log("[AuthContext] Session valid - staying logged in as", stored.email);
           setUser(stored);
         } else {
+          console.log("[AuthContext] Session expired - logging out");
           await authService.logout();
           setUser(null);
         }
+      } else {
+        console.log("[AuthContext] No stored user - showing Onboarding/Login");
       }
 
       setLoading(false);
@@ -48,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
+    console.log("[AuthContext] logout() called from UI");
     await authService.logout();
     setUser(null);
   };
