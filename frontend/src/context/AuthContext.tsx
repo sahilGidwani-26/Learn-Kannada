@@ -21,7 +21,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     (async () => {
       const stored = await authService.getStoredUser();
-      setUser(stored);
+
+      if (stored) {
+        // Only keep the session if the user was active within the last 2 days.
+        const isValid = await authService.checkSessionValidity();
+        if (isValid) {
+          setUser(stored);
+        } else {
+          await authService.logout();
+          setUser(null);
+        }
+      }
+
       setLoading(false);
     })();
   }, []);
@@ -41,9 +52,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
-  // Merges fresh fields (like xp, coins, quizLevel after a quiz) into the cached user
-  // object AND persists them to AsyncStorage, so the update survives navigating away
-  // and app restarts too - not just the current screen.
   const updateUser = async (fields: Partial<User>) => {
     setUser((prev) => {
       if (!prev) return prev;

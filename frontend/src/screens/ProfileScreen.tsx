@@ -26,7 +26,7 @@ const ProfileScreen: React.FC = () => {
       <View style={styles.statsRow}>
         <Stat label="XP" value={user?.xp ?? 0} />
         <Stat label="Coins" value={user?.coins ?? 0} />
-        <Stat label="Level" value={user?.level ?? 1} />
+        <Stat label="Quiz Level" value={user?.quizLevel ?? 1} />
       </View>
 
       <AppButton title="Log Out" variant="outline" onPress={handleLogout} style={{ marginTop: 30, width: "100%" }} />
